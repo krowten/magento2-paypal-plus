@@ -32,12 +32,6 @@ use Magento\Framework\View\LayoutFactory;
  */
 class Data extends \Magento\Payment\Helper\Data
 {
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
     /**
      * @var \Magento\Framework\Session\Generic
      */
@@ -65,14 +59,12 @@ class Data extends \Magento\Payment\Helper\Data
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Payment\Model\Config $paymentConfig,
         \Magento\Framework\App\Config\Initial $initialConfig,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Session\Generic $generic,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
     ) {
         parent::__construct($context, $layoutFactory, $paymentMethodFactory, $appEmulation, $paymentConfig, $initialConfig);
-        $this->scopeConfig = $scopeConfig;
         $this->generic = $generic;
         $this->request = $request;
         $this->storeManager = $storeManager;

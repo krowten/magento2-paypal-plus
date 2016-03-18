@@ -498,7 +498,7 @@ class Api
         } catch (PayPalConnectionException $ex) {
             if ($ex->getData()) {
                 $data = json_decode($ex->getData(), true);
-                if ($data['name'] == self::WEBHOOK_URL_ALREADY_EXISTS) {
+                if (isset($data['name']) && $data['name'] == self::WEBHOOK_URL_ALREADY_EXISTS) {
                     return true;
                 }
             }

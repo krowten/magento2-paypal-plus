@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment_de">
+            <group id="iways_paypalplus_section" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PayPalPlus Settings</label>
+                <comment><![CDATA[]]></comment>
+                <attribute type="expanded">1</attribute>
+                <fieldset_css>complex paypalplus-section</fieldset_css>
+                <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Group</frontend_model>
+                <group id="iways_paypalplus_api" translate="label" showInDefault="1" showInWebsite="1" sortOrder="10">
+                    <comment><![CDATA[<a href="https://www.paypalobjects.com/webstatic/de_DE/downloads/PayPal_Nutzung_der_REST_API.pdf" target="_blank">How to retrieve your PayPal API credentials.</a>]]></comment>
+                    <label>PayPalPlus Api Settings</label>
+                    <attribute type="expanded">1</attribute>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <!-- <field id="client_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Client ID</label>
+                        <config_path>iways_paypalplus/api/client_id</config_path>
+                    </field>
+                    <field id="client_secret" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Client Secret</label>
+                        <config_path>iways_paypalplus/api/client_secret</config_path>
+                    </field> -->
+                    <field id="client_id" translate="label" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Client ID</label>
+                        <config_path>iways_paypalplus/api/client_id</config_path>
+                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    </field>
+                    <field id="client_secret" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Client Secret</label>
+                        <config_path>iways_paypalplus/api/client_secret</config_path>
+                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    </field>
+                    <field id="mode" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Mode</label>
+                        <source_model>Iways\PayPalPlus\Model\System\Config\Source\Mode</source_model>
+                        <config_path>iways_paypalplus/api/mode</config_path>
+                    </field>
+                    <field id="paypalplus_hdrimg" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Header Image URL</label>
+                        <comment><![CDATA[The image at the top left of the checkout page. Max size is 750x90-pixel. <strong style="color:red">https</strong> is highly encouraged.]]></comment>
+                        <config_path>iways_paypalplus/api/hdrimg</config_path>
+                    </field>
+                </group>
+                <group id="iways_paypalplus" translate="label" type="text" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label><![CDATA[PayPalPlus Payment Settings]]></label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Enable this Solution</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/iways_paypalplus_payment/active</config_path>
+                    </field>
+                    <field id="show_loading_indicator" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Show loading indicator</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/iways_paypalplus_payment/show_loading_indicator</config_path>
+                    </field>
+                    <field id="transfer_reserved_order_id" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Transfer order's ID as PayPal invoice number</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/iways_paypalplus_payment/transfer_reserved_order_id</config_path>
+                    </field>
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Payment from Applicable Countries</label>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                        <config_path>payment/iways_paypalplus_payment/allowspecific</config_path>
+                    </field>
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Payment from Specific Countries</label>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <config_path>payment/iways_paypalplus_payment/specificcountry</config_path>
+                    </field>
+                    <!--<field id="third_party_moduls" translate="label" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Allowed Third-Party Moduls</label>
+                        <source_model>Iways\PayPalPlus\Model\System\Config\Source\ThirdPartyModuls</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <config_path>payment/iways_paypalplus_payment/third_party_moduls</config_path>
+                    </field> -->
+                </group>
+                <!-- <group id="third_party_modul_info" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30">
+                    <label>PayPalPlus Third party methods info text</label>
+                    <comment>Only selected and saved third party payments will be shown.</comment>
+                    <frontend_type>text</frontend_type>
+                    <frontend_model>Iways\PayPalPlus\Block\Adminhtml\System\Config\ThirdPartyInfo</frontend_model>
+                </group> -->
+                <group id="iways_paypalplus_dev" translate="label" showInDefault="1" showInWebsite="1" sortOrder="60">
+                    <label>PayPalPlus Development Settings</label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="debug" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Debug</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>iways_paypalplus/dev/debug</config_path>
+                    </field>
+                    <field id="pui_sandbox" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Show PuI in Sandbox</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>iways_paypalplus/dev/pui_sandbox</config_path>
+                    </field>
+                    <field id="web_profile_id" translate="label" type="text" sortOrder="60" showInDefault="0" showInWebsite="0" showInStore="0">
+                        <label>Web-Profile ID</label>
+                        <config_path>iways_paypalplus/dev/web_profile_id</config_path>
+                    </field>
+                    <field id="webhook_id" translate="label" type="text" sortOrder="70" showInDefault="0" showInWebsite="0" showInStore="0">
+                        <label>Webhook ID</label>
+                        <config_path>iways_paypalplus/dev/webhook_id</config_path>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

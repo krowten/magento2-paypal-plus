@@ -83,11 +83,15 @@ class ConfigProvider implements ConfigProviderInterface
     protected function getCountry()
     {
         $billingAddress = $this->checkoutSession->getQuote()->getBillingAddress();
-        if ($billingAddress) {
-            $countryId = $billingAddress->getCountryId();
-        } else {
-            $countryId = $this->scopeConfig->getValue('payment/account/merchant_country', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($billingAddress->getCountryId()) {
+            return $billingAddress->getCountryId();
         }
-        return $countryId;
+
+        $shippingAddress = $this->checkoutSession->getQuote()->getShippingAddress();
+        if ($shippingAddress->getCountryId()) {
+            return $shippingAddress->getCountryId();
+        }
+
+        return $this->scopeConfig->getValue('paypal/general/merchant_country', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

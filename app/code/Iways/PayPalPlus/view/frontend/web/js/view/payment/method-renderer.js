@@ -8,6 +8,7 @@ define(
         rendererList
     ) {
         'use strict';
+        rendererList.removeAll();
         rendererList.push(
             {
                 type: 'iways_paypalplus_payment',

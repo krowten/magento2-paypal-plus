@@ -2,10 +2,12 @@
 /*global define*/
 define(
     [
+        'jquery',
         'Magento_Checkout/js/view/payment/default',
+        'Magento_Checkout/js/model/quote',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (Component) {
+    function ($, Component, quote) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             defaults: {
@@ -34,7 +36,6 @@ define(
             canInitialise: function () {
                 return this.paymentExperience;
             },
-
             /**
              * @override
              */
@@ -44,17 +45,20 @@ define(
             },
             initPayPalPlusFrame: function () {
                 var self = this;
-                PAYPAL.apps.PPP({
-                    approvalUrl: self.paymentExperience,
-                    placeholder: "ppplus",
-                    mode: self.mode,
-                    useraction: "commit",
-                    buttonLocation: "outside",
-                    showPuiOnSandbox: self.showPuiOnSandbox,
-                    showLoadingIndicator: self.showLoadingIndicator,
-                    country: self.country,
-                    language: self.language
-                });
+                if(self.canInitialise()) {
+                    this.selectPaymentMethod();
+                    PAYPAL.apps.PPP({
+                        approvalUrl: self.paymentExperience,
+                        placeholder: "ppplus",
+                        mode: self.mode,
+                        useraction: "commit",
+                        buttonLocation: "outside",
+                        showPuiOnSandbox: self.showPuiOnSandbox,
+                        showLoadingIndicator: self.showLoadingIndicator,
+                        country: self.country,
+                        language: self.language
+                    });
+                }
             }
         });
     }

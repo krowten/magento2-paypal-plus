@@ -2,15 +2,21 @@
 /*global define*/
 define(
     [
+        'ko',
         'underscore',
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment-service',
+        'Magento_Checkout/js/action/select-payment-method',
+        'Magento_Checkout/js/checkout-data',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function ($, Component, quote, paymentService) {
+    function (ko, $, Component, quote, paymentService, selectPaymentMethod, checkoutData) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
+            isPaymentMethodSelected: ko.observable(false),
+            lastCall: 'none',
+            selectedMethod: "iways_paypalplus_payment",
             defaults: {
                 template: 'Iways_PayPalPlus/payment',
                 paymentExperience: paypalplusConfig.paymentExperience,
@@ -32,6 +38,7 @@ define(
                 this.showPuiOnSandbox = paypalplusConfig ? paypalplusConfig.showPuiOnSandbox : '';
                 this.showLoadingIndicator = paypalplusConfig ? paypalplusConfig.showLoadingIndicator : '';
                 this.thirdPartyPaymentMethods = paypalplusConfig ? paypalplusConfig.thirdPartyPaymentMethods : [];
+                this.paymentCodeMappings = {};
             },
             /**
              * @returns {*|String}
@@ -49,7 +56,7 @@ define(
             initPayPalPlusFrame: function () {
                 var self = this;
                 if(self.canInitialise()) {
-                    this.selectPaymentMethod();
+                    self.selectPaymentMethod();
                     window.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
                         placeholder: "ppplus",
@@ -60,7 +67,21 @@ define(
                         showLoadingIndicator: self.showLoadingIndicator,
                         country: self.country,
                         language: self.language,
-                        thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods()
+                        thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
+                        onThirdPartyPaymentMethodSelected:function (data) {
+                            this.lastCall = 'onThirdPartyPaymentMethodSelected';
+                            self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
+                        },
+                        enableContinue: function () {
+                            if(this.lastCall != 'onThirdPartyPaymentMethodSelected') {
+                                self.selectedMethod = 'iways_paypalplus_payment';
+                            }
+                            this.lastCall = 'enableContinue';
+                            self.isPaymentMethodSelected = true;
+                        },
+                        disableContinue: function() {
+                            self.isPaymentMethodSelected = false;
+                        }
                     });
                 }
             },
@@ -71,6 +92,7 @@ define(
                 _.each(activeMethods, function(activeMethod) {
                     try {
                         if(self.thirdPartyPaymentMethods[activeMethod.method] !== undefined) {
+                            self.paymentCodeMappings[self.thirdPartyPaymentMethods[activeMethod.method].methodName] = activeMethod.method;
                             pppThirdPartyMethods.push(self.thirdPartyPaymentMethods[activeMethod.method]);
                         }
                     } catch (e) {
@@ -78,8 +100,20 @@ define(
                     }
                 });
                 return pppThirdPartyMethods;
+            },
+            /**
+             * Get payment method data
+             */
+            getData: function() {
+                return {
+                    "method": this.selectedMethod,
+                    "po_number": null,
+                    "additional_data": null
+                };
+            },
+            placePPPOrder: function (data, event) {
+                return this.placeOrder(data, event);
             }
-
         });
     }
 );

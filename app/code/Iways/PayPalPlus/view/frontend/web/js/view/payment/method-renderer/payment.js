@@ -2,12 +2,13 @@
 /*global define*/
 define(
     [
-        'jquery',
+        'underscore',
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
+        'Magento_Checkout/js/model/payment-service',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function ($, Component, quote) {
+    function ($, Component, quote, paymentService) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             defaults: {
@@ -18,6 +19,7 @@ define(
                 showLoadingIndicator: paypalplusConfig.showLoadingIndicator,
                 country: paypalplusConfig.country,
                 language: paypalplusConfig.language,
+                thirdPartyPaymentMethods: paypalplusConfig.thirdPartyPaymentMethods,
             },
             /**
              * @function
@@ -29,6 +31,7 @@ define(
                 this.language = paypalplusConfig ? paypalplusConfig.language : '';
                 this.showPuiOnSandbox = paypalplusConfig ? paypalplusConfig.showPuiOnSandbox : '';
                 this.showLoadingIndicator = paypalplusConfig ? paypalplusConfig.showLoadingIndicator : '';
+                this.thirdPartyPaymentMethods = paypalplusConfig ? paypalplusConfig.thirdPartyPaymentMethods : [];
             },
             /**
              * @returns {*|String}
@@ -47,7 +50,7 @@ define(
                 var self = this;
                 if(self.canInitialise()) {
                     this.selectPaymentMethod();
-                    PAYPAL.apps.PPP({
+                    window.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
                         placeholder: "ppplus",
                         mode: self.mode,
@@ -56,10 +59,27 @@ define(
                         showPuiOnSandbox: self.showPuiOnSandbox,
                         showLoadingIndicator: self.showLoadingIndicator,
                         country: self.country,
-                        language: self.language
+                        language: self.language,
+                        thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods()
                     });
                 }
+            },
+            getThirdPartyPaymentMethods: function() {
+                var self = this;
+                var activeMethods = paymentService.getAvailablePaymentMethods();
+                var pppThirdPartyMethods = [];
+                _.each(activeMethods, function(activeMethod) {
+                    try {
+                        if(self.thirdPartyPaymentMethods[activeMethod.method] !== undefined) {
+                            pppThirdPartyMethods.push(self.thirdPartyPaymentMethods[activeMethod.method]);
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+                return pppThirdPartyMethods;
             }
+
         });
     }
 );

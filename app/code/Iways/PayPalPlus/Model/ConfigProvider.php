@@ -42,23 +42,41 @@ class ConfigProvider implements ConfigProviderInterface
     protected $scopeConfig;
 
     /**
+     * @var \Magento\Payment\Model\Config
+     */
+    protected $paymentConfig;
+
+    /**
+     * Url Builder
+     *
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * @param PaymentHelper $paymentHelper
      * @param Escaper $escaper
      * @param \Iways\PayPalPlus\Helper\Data $payPalPlusHelper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Payment\Model\Config $paymentConfig
+     * @param \Magento\Framework\UrlInterface $urlBuilder
      */
     public function __construct(
         PaymentHelper $paymentHelper,
         Escaper $escaper,
         \Iways\PayPalPlus\Helper\Data $payPalPlusHelper,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Checkout\Model\Session $checkoutSession
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Payment\Model\Config $paymentConfig,
+        \Magento\Framework\UrlInterface $urlBuilder
     ) {
         $this->escaper = $escaper;
         $this->method = $paymentHelper->getMethodInstance($this->methodCode);
         $this->payPalPlusHelper = $payPalPlusHelper;
         $this->scopeConfig = $scopeConfig;
         $this->checkoutSession = $checkoutSession;
+        $this->paymentConfig = $paymentConfig;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -70,11 +88,16 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 'iways_paypalplus_payment' => [
                     'paymentExperience' => $this->payPalPlusHelper->getPaymentExperience(),
-                    'showPuiOnSandbox' => $this->scopeConfig->getValue('iways_paypalplus/dev/pui_sandbox', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? true : false,
-                    'showLoadingIndicator' => $this->scopeConfig->getValue('payment/iways_paypalplus_payment/show_loading_indicator', \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? true : false,
-                    'mode' => $this->scopeConfig->getValue('iways_paypalplus/api/mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'showPuiOnSandbox' => $this->scopeConfig->getValue('iways_paypalplus/dev/pui_sandbox',
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? true : false,
+                    'showLoadingIndicator' => $this->scopeConfig->getValue('payment/iways_paypalplus_payment/show_loading_indicator',
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE) ? true : false,
+                    'mode' => $this->scopeConfig->getValue('iways_paypalplus/api/mode',
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
                     'country' => $this->getCountry(),
-                    'language' => $this->scopeConfig->getValue('general/locale/code', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+                    'language' => $this->scopeConfig->getValue('general/locale/code',
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                    'thirdPartyPaymentMethods' => $this->getThirdPartyMethods()
                 ],
             ],
         ] : [];
@@ -92,6 +115,28 @@ class ConfigProvider implements ConfigProviderInterface
             return $shippingAddress->getCountryId();
         }
 
-        return $this->scopeConfig->getValue('paypal/general/merchant_country', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue('paypal/general/merchant_country',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    protected function getThirdPartyMethods()
+    {
+        $paymentMethods = $this->paymentConfig->getActiveMethods();
+        $methods = [];
+        foreach ($paymentMethods as $paymentCode => $paymentTitle) {
+            if(strpos($paymentCode, 'paypal') === false) {
+                $method = [
+                    'redirectUrl' => $this->urlBuilder->getUrl('checkout', ['_secure' => true]),
+                    'methodName' => $paymentTitle->getTitle(),
+                    'imageUrl' => '',
+                    'description' => '',
+                ];
+                $methods[$paymentCode] = $method;
+            }
+        }
+        if ($methods) {
+            return $methods;
+        }
+        return null;
     }
 }

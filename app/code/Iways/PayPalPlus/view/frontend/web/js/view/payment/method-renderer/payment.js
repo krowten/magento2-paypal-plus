@@ -69,14 +69,14 @@ define(
                         language: self.language,
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
                         onThirdPartyPaymentMethodSelected:function (data) {
-                            this.lastCall = 'onThirdPartyPaymentMethodSelected';
+                            self.lastCall = 'onThirdPartyPaymentMethodSelected';
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
                         },
                         enableContinue: function () {
-                            if(this.lastCall != 'onThirdPartyPaymentMethodSelected') {
+                            if(self.lastCall != 'onThirdPartyPaymentMethodSelected') {
                                 self.selectedMethod = 'iways_paypalplus_payment';
                             }
-                            this.lastCall = 'enableContinue';
+                            self.lastCall = 'enableContinue';
                             self.isPaymentMethodSelected = true;
                         },
                         disableContinue: function() {
@@ -105,8 +105,9 @@ define(
              * Get payment method data
              */
             getData: function() {
+                var self = this;
                 return {
-                    "method": this.selectedMethod,
+                    "method": self.selectedMethod,
                     "po_number": null,
                     "additional_data": null
                 };

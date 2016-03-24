@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Iways\PayPalPlus\Model;
+namespace Iways\PayPalPlus\Model\PaymentInformationManagement;
 
 class PPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\PaymentInformationManagementInterface
 {
@@ -70,6 +70,7 @@ class PPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\PaymentIn
             $this->billingAddressManagement->assign($cartId, $billingAddress);
         }
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
+
         return true;
     }
 

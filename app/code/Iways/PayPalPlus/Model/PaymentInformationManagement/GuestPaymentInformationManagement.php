@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Iways\PayPalPlus\Model;
+namespace Iways\PayPalPlus\Model\PaymentInformationManagement;
 
 use Magento\Quote\Api\CartRepositoryInterface;
 

@@ -23,7 +23,7 @@ define(
              * Checkout for guest and registered customer.
              */
             if (!customer.isLoggedIn()) {
-                serviceUrl = urlBuilder.createUrl('/guest-carts/:cartId/set-payment-information', {
+                serviceUrl = urlBuilder.createUrl('/guest-carts/:cartId/set-ppp-payment-information', {
                     cartId: quote.getQuoteId()
                 });
                 payload = {
@@ -33,7 +33,7 @@ define(
                     billingAddress: quote.billingAddress()
                 };
             } else {
-                serviceUrl = urlBuilder.createUrl('/carts/mine/set-payment-information', {});
+                serviceUrl = urlBuilder.createUrl('/carts/mine/set-ppp-payment-information', {});
                 payload = {
                     cartId: quote.getQuoteId(),
                     paymentMethod: paymentData,

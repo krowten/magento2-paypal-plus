@@ -1,0 +1,38 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+namespace Iways\PayPalPlus\Api;
+
+/**
+ * Interface for managing guest payment information
+ * @api
+ */
+interface GuestPPPPaymentInformationManagementInterface
+{
+    /**
+     * Set payment information for a specified cart.
+     *
+     * @param string $cartId
+     * @param string $email
+     * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
+     * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @return int Order ID.
+     */
+    public function savePaymentInformation(
+        $cartId,
+        $email,
+        \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
+        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+    );
+
+    /**
+     * Get payment information
+     *
+     * @param string $cartId
+     * @return \Magento\Checkout\Api\Data\PaymentDetailsInterface
+     */
+    public function getPaymentInformation($cartId);
+}

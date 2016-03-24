@@ -175,8 +175,9 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $payment->setTransactionId($transactionId);
 
         if ($ppPayment->getState() == self::PPP_STATUS_APPROVED) {
-            $payment->setStatus(self::STATUS_APPROVED);
+            $payment->setIsTransactionApproved(true);
         }
+        $payment->setIsTransactionApproved(true);
 
         return $this;
     }

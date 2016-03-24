@@ -134,6 +134,11 @@ class Api
     protected $assetRepo;
 
     /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * Prepare PayPal REST SDK ApiContent
      *
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -149,6 +154,7 @@ class Api
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param EncryptorInterface $encryptor
      * @param \Magento\Framework\View\Asset\Repository $assetRepo
+     * @param \Magento\Framework\UrlInterface $urlBuilder
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -163,7 +169,8 @@ class Api
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         EncryptorInterface $encryptor,
-        \Magento\Framework\View\Asset\Repository $assetRepo
+        \Magento\Framework\View\Asset\Repository $assetRepo,
+        \Magento\Framework\UrlInterface $urlBuilder
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->registry = $registry;
@@ -178,6 +185,7 @@ class Api
         $this->messageManager = $messageManager;
         $this->encryptor = $encryptor;
         $this->assetRepo = $assetRepo;
+        $this->urlBuilder = $urlBuilder;
         $this->setApiContext(null);
     }
 
@@ -270,11 +278,9 @@ class Api
         $transaction->setAmount($amount);
         $transaction->setItemList($itemList);
 
-
-        $baseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK);
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl($baseUrl . 'paypalplus/index/success')
-            ->setCancelUrl($baseUrl.'checkout/#payment');
+        $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))
+            ->setCancelUrl($this->urlBuilder->getUrl('checkout'));
 
         $payment = new PayPalPayment();
         $payment->setIntent("sale")

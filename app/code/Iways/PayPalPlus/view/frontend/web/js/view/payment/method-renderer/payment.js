@@ -7,16 +7,18 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment-service',
-        'Magento_Checkout/js/action/select-payment-method',
-        'Magento_Checkout/js/checkout-data',
+        'Iways_PayPalPlus/js/action/patch-ppp-payment',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (ko, $, Component, quote, paymentService, selectPaymentMethod, checkoutData) {
+    function (ko, $, Component, quote, paymentService, patchPPPPayment) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
-            lastCall: 'none',
+            lastCall: false,
+            ppp: false,
+            continueCount: 0,
             selectedMethod: "iways_paypalplus_payment",
+            isInitialized: false,
             defaults: {
                 template: 'Iways_PayPalPlus/payment',
                 paymentExperience: paypalplusConfig.paymentExperience,
@@ -55,9 +57,9 @@ define(
             },
             initPayPalPlusFrame: function () {
                 var self = this;
-                if(self.canInitialise()) {
+                if(self.canInitialise() && !self.isInitialized) {
                     self.selectPaymentMethod();
-                    window.ppp = PAYPAL.apps.PPP({
+                    self.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
                         placeholder: "ppplus",
                         mode: self.mode,
@@ -65,6 +67,7 @@ define(
                         buttonLocation: "outside",
                         showPuiOnSandbox: self.showPuiOnSandbox,
                         showLoadingIndicator: self.showLoadingIndicator,
+                        preselection: "paypal",
                         country: self.country,
                         language: self.language,
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
@@ -83,6 +86,7 @@ define(
                             self.isPaymentMethodSelected = false;
                         }
                     });
+                    self.isInitialized = true;
                 }
             },
             getThirdPartyPaymentMethods: function() {
@@ -113,7 +117,17 @@ define(
                 };
             },
             placePPPOrder: function (data, event) {
-                return this.placeOrder(data, event);
+                if (event) {
+                    event.preventDefault();
+                }
+                var self = this;
+                console.log("PlaceOrderMethod: " + self.selectedMethod);
+                if(self.selectedMethod == "iways_paypalplus_payment") {
+                    patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
+                    return true;
+                } else {
+                    return this.placeOrder(data, event);
+                }
             }
         });
     }

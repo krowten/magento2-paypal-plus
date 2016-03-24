@@ -215,7 +215,7 @@ class Api
                 'mode' => $this->_mode,
                 'log.LogEnabled' => $this->scopeConfig->getValue('dev/log/active',
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
-                'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . 'PayPal.log',
+                'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . '/PayPal.log',
                 'log.LogLevel' => 'INFO'
             )
         );
@@ -342,7 +342,6 @@ class Api
                 $patchRequest,
                 $this->_apiContext
             );
-
             return $response;
         }
         return false;

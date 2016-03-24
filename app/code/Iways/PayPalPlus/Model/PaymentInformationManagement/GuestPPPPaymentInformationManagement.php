@@ -6,9 +6,10 @@
 
 namespace Iways\PayPalPlus\Model\PaymentInformationManagement;
 
+use Iways\PayPalPlus\Model\PaymentInformationManagement;
 use Magento\Quote\Api\CartRepositoryInterface;
 
-class GuestPPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\GuestPaymentInformationManagementInterface
+class GuestPPPPaymentInformationManagement extends PaymentInformationManagement implements \Iways\PayPalPlus\Api\GuestPPPPaymentInformationManagementInterface
 {
 
     /**
@@ -56,7 +57,8 @@ class GuestPPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\Gues
         \Magento\Quote\Api\GuestCartManagementInterface $cartManagement,
         \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement,
         \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory,
-        CartRepositoryInterface $cartRepository
+        CartRepositoryInterface $cartRepository,
+        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;
@@ -64,6 +66,7 @@ class GuestPPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\Gues
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->cartRepository = $cartRepository;
+        parent::__construct($payPalPlusApiFactory, $cartRepository);
     }
 
     /**
@@ -84,6 +87,7 @@ class GuestPPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\Gues
         }
 
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
+        $this->patchPayment($cartId);
         return true;
     }
 

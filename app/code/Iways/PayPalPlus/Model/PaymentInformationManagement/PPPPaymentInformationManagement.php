@@ -6,7 +6,9 @@
 
 namespace Iways\PayPalPlus\Model\PaymentInformationManagement;
 
-class PPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\PaymentInformationManagementInterface
+use Iways\PayPalPlus\Model\PaymentInformationManagement;
+
+class PPPPaymentInformationManagement extends PaymentInformationManagement implements \Iways\PayPalPlus\Api\PPPPaymentInformationManagementInterface
 {
 
     /**
@@ -49,13 +51,16 @@ class PPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\PaymentIn
         \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Magento\Checkout\Model\PaymentDetailsFactory $paymentDetailsFactory,
-        \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository
+        \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository,
+        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;
         $this->cartManagement = $cartManagement;
         $this->paymentDetailsFactory = $paymentDetailsFactory;
         $this->cartTotalsRepository = $cartTotalsRepository;
+        parent::__construct($payPalPlusApiFactory, $quoteRepository);
     }
 
     /**
@@ -70,7 +75,7 @@ class PPPPaymentInformationManagement implements \Iways\PayPalPlus\Api\PaymentIn
             $this->billingAddressManagement->assign($cartId, $billingAddress);
         }
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
-
+        $this->patchPayment($cartId);
         return true;
     }
 

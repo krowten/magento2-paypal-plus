@@ -52,6 +52,11 @@ class Data extends \Magento\Payment\Helper\Data
      */
     protected $payPalPlusApiFactory;
 
+    /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    protected $messageManager;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         LayoutFactory $layoutFactory,
@@ -62,13 +67,15 @@ class Data extends \Magento\Payment\Helper\Data
         \Magento\Framework\Session\Generic $generic,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
+        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
+        \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         parent::__construct($context, $layoutFactory, $paymentMethodFactory, $appEmulation, $paymentConfig, $initialConfig);
         $this->generic = $generic;
         $this->request = $request;
         $this->storeManager = $storeManager;
         $this->payPalPlusApiFactory = $payPalPlusApiFactory;
+        $this->messageManager = $messageManager;
     }
     /**
      * Show Exception if debug mode.
@@ -78,7 +85,7 @@ class Data extends \Magento\Payment\Helper\Data
     public function handleException(\Exception $e)
     {
         if ($this->scopeConfig->getValue('iways_paypalplus/dev/debug', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)) {
-            $this->generic->addWarning($e->getData());
+            $this->messageManager->addWarning($e->getData());
         }
     }
 

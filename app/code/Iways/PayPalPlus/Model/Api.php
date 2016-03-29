@@ -208,12 +208,13 @@ class Api
 
         $this->_mode = $this->scopeConfig->getValue('iways_paypalplus/api/mode',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
+
         $this->_apiContext->setConfig(
             array(
                 'http.ConnectionTimeOut' => 30,
                 'http.Retry' => 1,
                 'mode' => $this->_mode,
-                'log.LogEnabled' => $this->scopeConfig->getValue('dev/log/active',
+                'log.LogEnabled' => $this->scopeConfig->getValue('iways_paypalplus/dev/debug',
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
                 'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . '/PayPal.log',
                 'log.LogLevel' => 'INFO'
@@ -338,10 +339,20 @@ class Api
             $payerInfoPatch->setValue($payerInfo);
             $patchRequest->addPatch($payerInfoPatch);
 
+            $amount = $this->buildAmount($quote);
+            $amountPatch = new Patch();
+            $amountPatch->setOp('replace');
+            $amountPatch->setPath('/transactions/0/amount');
+            $amountPatch->setValue($amount);
+            $patchRequest->addPatch($amountPatch);
+
             $response = $payment->update(
                 $patchRequest,
                 $this->_apiContext
             );
+
+            $this->logger->alert($payment);
+            $this->logger->alert($patchRequest);
             return $response;
         }
         return false;

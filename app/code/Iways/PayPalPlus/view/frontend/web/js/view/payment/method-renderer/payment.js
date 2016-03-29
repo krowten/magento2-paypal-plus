@@ -67,9 +67,9 @@ define(
                         buttonLocation: "outside",
                         showPuiOnSandbox: self.showPuiOnSandbox,
                         showLoadingIndicator: self.showLoadingIndicator,
-                        preselection: "paypal",
                         country: self.country,
                         language: self.language,
+                        preselection: "paypal",
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
                         onThirdPartyPaymentMethodSelected:function (data) {
                             self.lastCall = 'onThirdPartyPaymentMethodSelected';

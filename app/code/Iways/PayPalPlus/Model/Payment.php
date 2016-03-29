@@ -2,11 +2,13 @@
 
 namespace Iways\PayPalPlus\Model;
 
+use Magento\Framework\Exception\LocalizedException;
+
 class Payment extends \Magento\Payment\Model\Method\AbstractMethod
 {
     const PPP_STATUS_APPROVED = 'approved';
     const CODE = 'iways_paypalplus_payment';
-    const PENDING = 'pending';
+    const PPP_PENDING = 'pending';
 
     const PPP_PUI_INSTRUCTION_TYPE = 'PAY_UPON_INVOICE';
 
@@ -67,6 +69,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
         \Magento\Customer\Model\Session $customerSession,
         \Iways\PayPalPlus\Helper\Data $payPalPlusHelper,
+        \Psr\Log\LoggerInterface $ppLogger,
         \Magento\Sales\Model\Order\Payment\TransactionFactory $salesOrderPaymentTransactionFactory,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -81,7 +84,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->payPalPlusApiFactory = $payPalPlusApiFactory;
-        $this->logger = $logger;
+        $this->ppLogger = $ppLogger;
         $this->customerSession = $customerSession;
         $this->payPalPlusHelper = $payPalPlusHelper;
         $this->salesOrderPaymentTransactionFactory = $salesOrderPaymentTransactionFactory;
@@ -101,6 +104,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
+        /** @var \Magento\Sales\Model\Order\Payment $payment */
         $paymentId = $this->request->getParam('paymentId');
         $payerId = $this->request->getParam('PayerID');
         try {
@@ -113,7 +117,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
                 );
             }
         } catch (\Exception $e) {
-            $this->logger->critical($e);
+            $this->ppLogger->critical($e);
         }
         /**
          * @var \PayPal\Api\Payment $ppPayment
@@ -127,7 +131,9 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->customerSession->setPayPalPaymentPatched(null);
 
         if (!$ppPayment) {
-            throw new \Magento\Framework\Exception\LocalizedException('Payment could not be executed.');
+            throw new LocalizedException(
+                __('Payment could not be executed.')
+            );
         }
 
         if ($paymentInstructions = $ppPayment->getPaymentInstruction()) {
@@ -163,21 +169,28 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
                 if ($resource && isset($resource[0])) {
                     $sale = $resource[0]->getSale();
                     $transactionId = $sale->getId();
-                    if ($sale->getState() == self::PENDING) {
+                    if ($sale->getState() == self::PPP_PENDING) {
                         $payment->setIsTransactionPending(true);
                     }
                 }
             }
 
-        } catch (Exception $e) {
-            $transactionId = $payment->getId();
+        } catch (\Exception $e) {
+            $transactionId = $ppPayment->getId();
         }
-        $payment->setTransactionId($transactionId);
+        $payment->setTransactionId($transactionId)->setLastTransId($transactionId);
 
         if ($ppPayment->getState() == self::PPP_STATUS_APPROVED) {
             $payment->setIsTransactionApproved(true);
         }
-        $payment->setIsTransactionApproved(true);
+
+        $payment->setStatus(self::STATUS_APPROVED)
+            ->setIsTransactionClosed(false)
+            ->setAmount($amount)
+            ->setShouldCloseParentTransaction(false);
+        if ($payment->isCaptureFinal($amount)) {
+            $payment->setShouldCloseParentTransaction(true);
+        }
 
         return $this;
     }
@@ -190,7 +203,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      *
      * @return \Iways\PayPalPlus\Model\Payment
      */
-    /*public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         $ppRefund = $this->payPalPlusApiFactory->create()->refundPayment(
             $this->_getParentTransactionId($payment),
@@ -198,7 +211,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         );
         $payment->setTransactionId($ppRefund->getId())->setTransactionClosed(1);
         return $this;
-    }*/
+    }
 
     /**
      * Parent transaction id getter

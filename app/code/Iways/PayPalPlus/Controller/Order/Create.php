@@ -21,6 +21,7 @@
 namespace Iways\PayPalPlus\Controller\Order;
 
 use Magento\Customer\Model\Session;
+use Magento\Framework\DataObject;
 
 /**
  * PayPalPlus checkout controller
@@ -87,11 +88,22 @@ class Create extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $cartId = $this->checkoutSession->getQuoteId();
+        $result = new DataObject();
         if($this->customerSession->isLoggedIn()) {
             $this->cartManagement->placeOrder($cartId);
         } else {
             $this->guestCartManagement->placeOrder($cartId);
         }
+        $result->setData('success', true);
+        $result->setData('error', false);
+
+        $this->_eventManager->dispatch(
+            'checkout_controller_onepage_saveOrder',
+            [
+                'result' => $result,
+                'action' => $this
+            ]
+        );
         $this->_redirect('checkout/onepage/success');
     }
 }

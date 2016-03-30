@@ -9,9 +9,10 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment-service',
         'Iways_PayPalPlus/js/action/patch-ppp-payment',
+        'Magento_Checkout/js/model/payment/additional-validators',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (ko, $, _, Component, quote, paymentService, patchPPPPayment) {
+    function (ko, $, _, Component, quote, paymentService, patchPPPPayment, additionalValidators) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
@@ -126,8 +127,11 @@ define(
                 var self = this;
                 console.log("PlaceOrderMethod: " + self.selectedMethod);
                 if(self.selectedMethod == "iways_paypalplus_payment") {
-                    patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
-                    return true;
+                    if (this.validate() && additionalValidators.validate()) {
+                        patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
+                        return true;
+                    }
+                    return false;
                 } else {
                     return this.placeOrder(data, event);
                 }

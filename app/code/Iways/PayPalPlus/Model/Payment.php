@@ -69,7 +69,6 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
         \Magento\Customer\Model\Session $customerSession,
         \Iways\PayPalPlus\Helper\Data $payPalPlusHelper,
-        \Psr\Log\LoggerInterface $ppLogger,
         \Magento\Sales\Model\Order\Payment\TransactionFactory $salesOrderPaymentTransactionFactory,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -84,12 +83,12 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->payPalPlusApiFactory = $payPalPlusApiFactory;
-        $this->ppLogger = $ppLogger;
         $this->customerSession = $customerSession;
         $this->payPalPlusHelper = $payPalPlusHelper;
         $this->salesOrderPaymentTransactionFactory = $salesOrderPaymentTransactionFactory;
         parent::__construct($context, $registry, $extensionFactory, $customAttributeFactory, $paymentData, $scopeConfig,
             $logger, $resource, $resourceCollection, $data);
+        $this->ppLogger = $context->getLogger();
     }
 
     /**

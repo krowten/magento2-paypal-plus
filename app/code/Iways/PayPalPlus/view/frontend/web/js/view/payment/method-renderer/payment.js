@@ -3,6 +3,7 @@
 define(
     [
         'ko',
+        'jquery',
         'underscore',
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
@@ -10,7 +11,7 @@ define(
         'Iways_PayPalPlus/js/action/patch-ppp-payment',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (ko, $, Component, quote, paymentService, patchPPPPayment) {
+    function (ko, $, _, Component, quote, paymentService, patchPPPPayment) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
@@ -81,9 +82,11 @@ define(
                             }
                             self.lastCall = 'enableContinue';
                             self.isPaymentMethodSelected = true;
+                            $("#place-ppp-order").removeAttr("disabled");
                         },
                         disableContinue: function() {
                             self.isPaymentMethodSelected = false;
+                            $("#place-ppp-order").attr("disabled", "disabled");
                         }
                     });
                     self.isInitialized = true;

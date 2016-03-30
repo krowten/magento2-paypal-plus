@@ -21,6 +21,7 @@ define(
             continueCount: 0,
             selectedMethod: "iways_paypalplus_payment",
             isInitialized: false,
+            lastHash: false,
             defaults: {
                 template: 'Iways_PayPalPlus/payment',
                 paymentExperience: paypalplusConfig.paymentExperience,
@@ -55,6 +56,7 @@ define(
              */
             initObservable: function () {
                 this.initVars();
+                this.startIframeChecker(this);
                 return this;
             },
             initPayPalPlusFrame: function () {
@@ -92,6 +94,15 @@ define(
                     });
                     self.isInitialized = true;
                 }
+            },
+            startIframeChecker: function(self) {
+                var currentHash = window.location.hash;
+                if(self.isInitialized && currentHash == "#payment" && self.lastHash != "#payment") {
+                    self.isInitialized = false;
+                    self.initPayPalPlusFrame();
+                }
+                self.lastHash = currentHash;
+                setTimeout(self.startIframeChecker, 1000, self);
             },
             getThirdPartyPaymentMethods: function() {
                 var self = this;

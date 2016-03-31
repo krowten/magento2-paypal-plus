@@ -8,6 +8,7 @@ namespace Iways\PayPalPlus\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\Escaper;
 use Magento\Payment\Helper\Data as PaymentHelper;
+use Psr\Log\LoggerInterface;
 
 class ConfigProvider implements ConfigProviderInterface
 {
@@ -54,6 +55,11 @@ class ConfigProvider implements ConfigProviderInterface
     protected $urlBuilder;
 
     /**
+     * @var MethodList
+     */
+    protected $methodLost;
+
+    /**
      * @param PaymentHelper $paymentHelper
      * @param Escaper $escaper
      * @param \Iways\PayPalPlus\Helper\Data $payPalPlusHelper
@@ -68,7 +74,9 @@ class ConfigProvider implements ConfigProviderInterface
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Payment\Model\Config $paymentConfig,
-        \Magento\Framework\UrlInterface $urlBuilder
+        MethodList $methodList,
+        \Magento\Framework\UrlInterface $urlBuilder,
+        LoggerInterface $logger
     ) {
         $this->escaper = $escaper;
         $this->method = $paymentHelper->getMethodInstance($this->methodCode);
@@ -76,7 +84,9 @@ class ConfigProvider implements ConfigProviderInterface
         $this->scopeConfig = $scopeConfig;
         $this->checkoutSession = $checkoutSession;
         $this->paymentConfig = $paymentConfig;
+        $this->methodList = $methodList;
         $this->urlBuilder = $urlBuilder;
+        $this->logger = $logger;
     }
 
     /**
@@ -121,17 +131,24 @@ class ConfigProvider implements ConfigProviderInterface
 
     protected function getThirdPartyMethods()
     {
-        $paymentMethods = $this->paymentConfig->getActiveMethods();
+        $paymentMethods = $this->methodList->getAvailableMethods($this->checkoutSession->getQuote(), false);
+        $allowedPPPMethods = explode(
+            ',',
+            $this->scopeConfig->getValue(
+                'payment/iways_paypalplus_payment/third_party_moduls',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            )
+        );
         $methods = [];
-        foreach ($paymentMethods as $paymentCode => $paymentTitle) {
-            if(strpos($paymentCode, 'paypal') === false) {
+        foreach ($paymentMethods as $paymentMethod) {
+            if (strpos($paymentMethod->getCode(), 'paypal') === false && in_array($paymentMethod->getCode(), $allowedPPPMethods)) {
                 $method = [
                     'redirectUrl' => $this->urlBuilder->getUrl('checkout', ['_secure' => true]),
-                    'methodName' => $paymentTitle->getTitle(),
+                    'methodName' => $paymentMethod->getTitle(),
                     'imageUrl' => '',
                     'description' => '',
                 ];
-                $methods[$paymentCode] = $method;
+                $methods[$paymentMethod->getCode()] = $method;
             }
         }
         if ($methods) {

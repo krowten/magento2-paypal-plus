@@ -61,7 +61,7 @@ define(
             },
             initPayPalPlusFrame: function () {
                 var self = this;
-                if(self.canInitialise() && !self.isInitialized) {
+                if (self.canInitialise() && !self.isInitialized) {
                     self.selectPaymentMethod();
                     self.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
@@ -75,19 +75,19 @@ define(
                         language: self.language,
                         preselection: "paypal",
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
-                        onThirdPartyPaymentMethodSelected:function (data) {
+                        onThirdPartyPaymentMethodSelected: function (data) {
                             self.lastCall = 'onThirdPartyPaymentMethodSelected';
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
                         },
                         enableContinue: function () {
-                            if(self.lastCall != 'onThirdPartyPaymentMethodSelected') {
+                            if (self.lastCall != 'onThirdPartyPaymentMethodSelected') {
                                 self.selectedMethod = 'iways_paypalplus_payment';
                             }
                             self.lastCall = 'enableContinue';
                             self.isPaymentMethodSelected = true;
                             $("#place-ppp-order").removeAttr("disabled");
                         },
-                        disableContinue: function() {
+                        disableContinue: function () {
                             self.isPaymentMethodSelected = false;
                             $("#place-ppp-order").attr("disabled", "disabled");
                         }
@@ -95,25 +95,23 @@ define(
                     self.isInitialized = true;
                 }
             },
-            startIframeChecker: function(self) {
+            startIframeChecker: function (self) {
                 var currentHash = window.location.hash;
-                if(self.isInitialized && currentHash == "#payment" && self.lastHash != "#payment") {
+                if (self.isInitialized && currentHash == "#payment" && self.lastHash != "#payment") {
                     self.isInitialized = false;
                     self.initPayPalPlusFrame();
                 }
                 self.lastHash = currentHash;
                 setTimeout(self.startIframeChecker, 1000, self);
             },
-            getThirdPartyPaymentMethods: function() {
+            getThirdPartyPaymentMethods: function () {
                 var self = this;
-                var activeMethods = paymentService.getAvailablePaymentMethods();
                 var pppThirdPartyMethods = [];
-                _.each(activeMethods, function(activeMethod) {
+                _.each(self.thirdPartyPaymentMethods, function (activeMethod, code) {
                     try {
-                        if(self.thirdPartyPaymentMethods[activeMethod.method] !== undefined) {
-                            self.paymentCodeMappings[self.thirdPartyPaymentMethods[activeMethod.method].methodName] = activeMethod.method;
-                            pppThirdPartyMethods.push(self.thirdPartyPaymentMethods[activeMethod.method]);
-                        }
+                        console.log(activeMethod);
+                        self.paymentCodeMappings[self.thirdPartyPaymentMethods[code].methodName] = code;
+                        pppThirdPartyMethods.push(self.thirdPartyPaymentMethods[code]);
                     } catch (e) {
                         console.log(e);
                     }
@@ -123,7 +121,7 @@ define(
             /**
              * Get payment method data
              */
-            getData: function() {
+            getData: function () {
                 var self = this;
                 return {
                     "method": self.selectedMethod,
@@ -137,7 +135,7 @@ define(
                 }
                 var self = this;
                 console.log("PlaceOrderMethod: " + self.selectedMethod);
-                if(self.selectedMethod == "iways_paypalplus_payment") {
+                if (self.selectedMethod == "iways_paypalplus_payment") {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
                         return true;

@@ -23,10 +23,11 @@ class MethodList extends \Magento\Payment\Model\MethodList
 
     /**
      * @param \Magento\Quote\Api\Data\CartInterface $quote
+     * @param boolean $checkPPP
      * @return \Magento\Payment\Model\MethodInterface[]
      * @api
      */
-    public function getAvailableMethods(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    public function getAvailableMethods(\Magento\Quote\Api\Data\CartInterface $quote = null, $checkPPP = true)
     {
         $store = $quote ? $quote->getStoreId() : null;
         $methods = [];
@@ -34,7 +35,7 @@ class MethodList extends \Magento\Payment\Model\MethodList
         foreach ($this->paymentHelper->getStoreMethods($store, $quote) as $method) {
             if ($this->_canUseMethod($method, $quote)) {
                 $method->setInfoInstance($quote->getPayment());
-                if($method->getCode() == Payment::CODE) {
+                if($checkPPP && $method->getCode() == Payment::CODE) {
                     return [$method];
                 }
                 $methods[] = $method;
@@ -43,7 +44,7 @@ class MethodList extends \Magento\Payment\Model\MethodList
                 }
             }
         }
-        if (!$isFreeAdded) {
+        if (!$isFreeAdded && !$quote->getGrandTotal()) {
             /** @var \Magento\Payment\Model\Method\Free $freeMethod */
             $freeMethod = $this->paymentHelper->getMethodInstance(Free::PAYMENT_METHOD_FREE_CODE);
             if ($freeMethod->isAvailableInConfig()) {

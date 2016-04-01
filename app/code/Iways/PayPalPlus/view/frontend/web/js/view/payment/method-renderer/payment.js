@@ -134,7 +134,6 @@ define(
                     event.preventDefault();
                 }
                 var self = this;
-                console.log("PlaceOrderMethod: " + self.selectedMethod);
                 if (self.selectedMethod == "iways_paypalplus_payment") {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);

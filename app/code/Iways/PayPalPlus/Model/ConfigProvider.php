@@ -146,7 +146,10 @@ class ConfigProvider implements ConfigProviderInterface
                     'redirectUrl' => $this->urlBuilder->getUrl('checkout', ['_secure' => true]),
                     'methodName' => $paymentMethod->getTitle(),
                     'imageUrl' => '',
-                    'description' => '',
+                    'description' => $this->scopeConfig->getValue(
+                        'payment/iways_paypalplus_section/third_party_modul_info/text_'.$paymentMethod->getCode(),
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                    ),
                 ];
                 $methods[$paymentMethod->getCode()] = $method;
             }

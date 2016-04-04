@@ -87,8 +87,9 @@ class ValidateObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $this->payPalPlusApiFactory->create()->testCredentials($this->getDefaultStoreId($observer));
-        $api = $this->payPalPlusApiFactory->create()->setApiContext($this->getDefaultStoreId($observer));
+        $pppApi = $this->payPalPlusApiFactory->create();
+        $pppApi->testCredentials($this->getDefaultStoreId($observer));
+        $api = $pppApi->setApiContext($this->getDefaultStoreId($observer));
         $webhook = $api->createWebhook();
         if ($webhook === false) {
             $this->messageManager->addError(

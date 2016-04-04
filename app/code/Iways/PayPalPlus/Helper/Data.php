@@ -20,6 +20,7 @@
 
 namespace Iways\PayPalPlus\Helper;
 
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\LayoutFactory;
 
@@ -57,6 +58,16 @@ class Data extends \Magento\Payment\Helper\Data
      */
     protected $messageManager;
 
+    /**
+     * @var \Magento\Config\Model\ResourceModel\Config
+     */
+    protected $configResource;
+
+    /**
+     * @var TypeListInterface
+     */
+    protected $cacheTypeList;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         LayoutFactory $layoutFactory,
@@ -68,7 +79,9 @@ class Data extends \Magento\Payment\Helper\Data
         \Magento\Framework\App\Request\Http $request,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\Config\Model\ResourceModel\Config $configResource,
+        TypeListInterface $cacheTypeList
     ) {
         parent::__construct($context, $layoutFactory, $paymentMethodFactory, $appEmulation, $paymentConfig, $initialConfig);
         $this->generic = $generic;
@@ -76,6 +89,8 @@ class Data extends \Magento\Payment\Helper\Data
         $this->storeManager = $storeManager;
         $this->payPalPlusApiFactory = $payPalPlusApiFactory;
         $this->messageManager = $messageManager;
+        $this->configResource = $configResource;
+        $this->cacheTypeList = $cacheTypeList;
     }
     /**
      * Show Exception if debug mode.
@@ -100,7 +115,7 @@ class Data extends \Magento\Payment\Helper\Data
             'http://',
             'https://',
             $this->_getUrl(
-                'paypalplus/index/webhooks',
+                'paypalplus/webhooks/index/',
                 array(
                     '_forced_secure' => true,
                     '_nosid' => true,
@@ -147,17 +162,38 @@ class Data extends \Magento\Payment\Helper\Data
      *
      * @param $key
      * @param $value
+     * @param $storeId
      * @return boolean
      */
-    public function saveStoreConfig($key, $value)
+    public function saveStoreConfig($key, $value, $storeId = null)
     {
-        /*Mage::getModel('core/config')->saveConfig(
+        if(!$storeId) {
+            $storeId = $this->storeManager->getStore()->getId();
+        }
+        $this->configResource->saveConfig(
             $key,
             $value,
             'stores',
-            $this->storeManager->getStore()->getId()
+            $storeId
         );
-        Mage::app()->getCacheInstance()->cleanType('config'); */
+        $this->cacheTypeList->cleanType('config');
+        return true;
+    }
+    /**
+     * Reset web profile id
+     *
+     * @return boolean
+     */
+    public function resetWebProfileId() {
+        foreach ($this->storeManager->getStores() as $store) {
+            $this->configResource->saveConfig(
+                'iways_paypalplus/dev/web_profile_id',
+                false,
+                'stores',
+                $store->getId()
+            );
+        }
+        $this->cacheTypeList->cleanType('config');
         return true;
     }
 

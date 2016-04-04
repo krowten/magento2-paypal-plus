@@ -8,5 +8,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="admin_system_config_changed_section_payment">
         <observer name="paypalplus_validate" instance="Iways\PayPalPlus\Observer\ValidateObserver" />
+        <observer name="paypalplus_webprofile_reset_payment" instance="Iways\PayPalPlus\Observer\ResetObserver" />
+    </event>
+    <event name="admin_system_config_changed_section_design">
+        <observer name="paypalplus_webprofile_reset_design" instance="Iways\PayPalPlus\Observer\ResetObserver" />
     </event>
 </config>

@@ -25,22 +25,30 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $_webhookEventFactory;
 
     /**
+     * @var \Iways\PayPalPlus\Model\ApiFactory
+     */
+    protected $_apiFactory;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Paypal\Model\IpnFactory $ipnFactory
+     * @param \Iways\PayPalPlus\Model\Webhook\EventFactory $webhookEventFactory
+     * @param \Iways\PayPalPlus\Model\ApiFactory $apiFactory
      * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Iways\PayPalPlus\Model\Webhook\EventFactory $webhookEventFactory,
+        \Iways\PayPalPlus\Model\ApiFactory $apiFactory,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->_logger = $logger;
         $this->_webhookEventFactory = $webhookEventFactory;
+        $this->_apiFactory = $apiFactory;
         parent::__construct($context);
     }
 
     /**
-     * Instantiate IPN model and pass IPN request to it
+     * Instantiate Event model and pass Webhook request to it
      *
      * @return void
      * @SuppressWarnings(PHPMD.ExitExpression)
@@ -53,7 +61,9 @@ class Index extends \Magento\Framework\App\Action\Action
 
         try {
             $data = $this->getRequest()->getPostValue();
-            $this->_ipnFactory->create(['data' => $data])->processIpnRequest();
+            /** @var \PayPal\Api\WebhookEvent $webhookEvent */
+            $webhookEvent = $this->_apiFactory->create()->validateWebhook($data);
+            $this->_webhookEventFactory->create(['data' => $data])->processIpnRequest();
         } catch (RemoteServiceUnavailableException $e) {
             $this->_logger->critical($e);
             $this->getResponse()->setStatusHeader(503, '1.1', 'Service Unavailable')->sendResponse();

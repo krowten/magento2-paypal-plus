@@ -821,19 +821,8 @@ class Api
      */
     public function resetWebProfileId()
     {
-
-        /*foreach ($this->storeManager->getStores() as $store) {
-            Mage::getModel('core/config')->saveConfig(
-                'iways_paypalplus/dev/web_profile_id',
-                false,
-                'stores',
-                $store->getId()
-            );
-        }
-        Mage::app()->getCacheInstance()->cleanType('config');*/
-        return true;
+        return $this->payPalPlusHelper->resetWebProfileId();
     }
-
     /**
      * Save WebProfileId
      *

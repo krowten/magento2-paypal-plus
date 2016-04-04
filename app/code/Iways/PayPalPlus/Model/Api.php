@@ -815,9 +815,13 @@ class Api
             'design/header/logo_src',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
-        $path = $folderName . '/' . $storeLogoPath;
-        return $this->urlBuilder
+        if($storeLogoPath) {
+            $path = $folderName . '/' . $storeLogoPath;
+            return $this->urlBuilder
                 ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
+        }
+        return $this->assetRepo->getUrlWithParams('images/logo.svg', ['_secure' => true]);
+
     }
 
     /**

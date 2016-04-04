@@ -810,8 +810,14 @@ class Api
             return $this->scopeConfig->getValue('iways_paypalplus/api/hdrimg',
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         }
-        return $this->assetRepo->getUrlWithParams($this->scopeConfig->getValue('design/header/logo_src',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE), array('_secure' => true));
+        $folderName = \Magento\Config\Model\Config\Backend\Image\Logo::UPLOAD_DIR;
+        $storeLogoPath = $this->scopeConfig->getValue(
+            'design/header/logo_src',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+        $path = $folderName . '/' . $storeLogoPath;
+        return $this->urlBuilder
+                ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
     }
 
     /**

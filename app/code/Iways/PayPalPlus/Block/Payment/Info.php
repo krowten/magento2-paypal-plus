@@ -31,12 +31,16 @@ class Info extends \Magento\Payment\Block\Info
 {
 
     /**
+     * @var string
+     */
+    protected $_template = 'Iways_PayPalPlus::paypalplus/payment/info.phtml';
+
+    /**
      * Set PayPal Plus template in construct
      */
     protected function _construct()
     {
         parent::_construct();
-        //$this->setTemplate('paypalplus/payment/info.phtml');
     }
 
     /**
@@ -45,7 +49,7 @@ class Info extends \Magento\Payment\Block\Info
      */
     public function toPdf()
     {
-        $this->setTemplate('paypalplus/payment/pdf/info.phtml');
+        $this->setTemplate('Iways_PayPalPlus::paypalplus/payment/pdf/info.phtml');
         return $this->toHtml();
     }
 
@@ -61,18 +65,18 @@ class Info extends \Magento\Payment\Block\Info
         $payment = $this->getInfo();
         $info = array();
 
-        if (!$this->getIsSecureMode()) {
-            $info['Transaction ID'] = $this->getInfo()->getLastTransId();
+        if(!$this->getIsSecureMode()) {
+            $info[(string)__('Transaction ID')] = $this->getInfo()->getLastTransId();
+        }
+        if($this->isPUI()) {
+            $info[(string)__('Account holder')] = $payment->getData('ppp_account_holder_name');
+            $info[(string)__('Bank')] = $payment->getData('ppp_bank_name');
+            $info[(string)__('IBAN')] = $payment->getData('ppp_international_bank_account_number');
+            $info[(string)__('BIC')] = $payment->getData('ppp_bank_identifier_code');
+            $info[(string)__('Reference number')] = $payment->getData('ppp_reference_number');
+            $info[(string)__('Payment due date')] = $payment->getData('ppp_payment_due_date');
         }
 
-        if($this->isPUI()) {
-            $info['Account holder'] = $payment->getData('ppp_account_holder_name');
-            $info['Bank'] = $payment->getData('ppp_bank_name');
-            $info['IBAN'] = $payment->getData('ppp_international_bank_account_number');
-            $info['BIC'] = $payment->getData('ppp_bank_identifier_code');
-            $info['Reference number'] = $payment->getData('ppp_reference_number');
-            $info['Payment due date'] = $payment->getData('ppp_payment_due_date');
-        }
         return $transport->addData($info);
     }
 

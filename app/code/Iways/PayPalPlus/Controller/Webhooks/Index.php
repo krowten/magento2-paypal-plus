@@ -63,7 +63,7 @@ class Index extends \Magento\Framework\App\Action\Action
             $data = file_get_contents('php://input');
             /** @var \PayPal\Api\WebhookEvent $webhookEvent */
             $webhookEvent = $this->_apiFactory->create()->validateWebhook($data);
-            $this->_webhookEventFactory->create()->processIpnRequest($webhookEvent);
+            $this->_webhookEventFactory->create()->processWebhookRequest($webhookEvent);
         } catch (RemoteServiceUnavailableException $e) {
             $this->_logger->critical($e);
             $this->getResponse()->setStatusHeader(503, '1.1', 'Service Unavailable')->sendResponse();

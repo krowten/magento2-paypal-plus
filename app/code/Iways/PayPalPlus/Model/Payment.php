@@ -10,7 +10,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     const CODE = 'iways_paypalplus_payment';
     const PPP_PENDING = 'pending';
 
-    const PPP_PUI_INSTRUCTION_TYPE = 'PAY_UPON_INVOICE';
+    const PPP_INSTRUCTION_TYPE = 'PAY_UPON_INVOICE';
 
     protected $_code = self::CODE;
 
@@ -27,6 +27,11 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canRefund = true;
     protected $_canRefundInvoicePartial = false;
     protected $_canUseCheckout = true;
+
+    /**
+     * @var string
+     */
+    protected $_infoBlockType = 'Iways\PayPalPlus\Block\Payment\Info';
 
     /**
      * @var \Magento\Framework\App\Request\Http
@@ -136,27 +141,27 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         }
 
         if ($paymentInstructions = $ppPayment->getPaymentInstruction()) {
-            $payment->setData('ppp_pui_reference_number', $paymentInstructions->getReferenceNumber());
-            $payment->setData('ppp_pui_instruction_type', $paymentInstructions->getInstructionType());
+            $payment->setData('ppp_reference_number', $paymentInstructions->getReferenceNumber());
+            $payment->setData('ppp_instruction_type', $paymentInstructions->getInstructionType());
             $payment->setData(
-                'ppp_pui_payment_due_date',
+                'ppp_payment_due_date',
                 $this->payPalPlusHelper->convertDueDate($paymentInstructions->getPaymentDueDate())
             );
-            $payment->setData('ppp_pui_note', $paymentInstructions->getNote());
+            $payment->setData('ppp_note', $paymentInstructions->getNote());
 
             $bankInsctructions = $paymentInstructions->getRecipientBankingInstruction();
-            $payment->setData('ppp_pui_bank_name', $bankInsctructions->getBankName());
-            $payment->setData('ppp_pui_account_holder_name', $bankInsctructions->getAccountHolderName());
+            $payment->setData('ppp_bank_name', $bankInsctructions->getBankName());
+            $payment->setData('ppp_account_holder_name', $bankInsctructions->getAccountHolderName());
             $payment->setData(
-                'ppp_pui_international_bank_account_number',
+                'ppp_international_bank_account_number',
                 $bankInsctructions->getInternationalBankAccountNumber()
             );
-            $payment->setData('ppp_pui_bank_identifier_code', $bankInsctructions->getBankIdentifierCode());
-            $payment->setData('ppp_pui_routing_number', $bankInsctructions->getRoutingNumber());
+            $payment->setData('ppp_bank_identifier_code', $bankInsctructions->getBankIdentifierCode());
+            $payment->setData('ppp_routing_number', $bankInsctructions->getRoutingNumber());
 
             $ppAmount = $paymentInstructions->getAmount();
-            $payment->setData('ppp_pui_amount', $ppAmount->getValue());
-            $payment->setData('ppp_pui_currency', $ppAmount->getCurrency());
+            $payment->setData('ppp_amount', $ppAmount->getValue());
+            $payment->setData('ppp_currency', $ppAmount->getCurrency());
         }
 
         $transactionId = null;

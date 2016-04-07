@@ -87,23 +87,28 @@ class Create extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $cartId = $this->checkoutSession->getQuoteId();
-        $result = new DataObject();
-        if($this->customerSession->isLoggedIn()) {
-            $this->cartManagement->placeOrder($cartId);
-        } else {
-            $this->guestCartManagement->placeOrder($cartId);
-        }
-        $result->setData('success', true);
-        $result->setData('error', false);
+        try {
+            $cartId = $this->checkoutSession->getQuoteId();
+            $result = new DataObject();
+            if($this->customerSession->isLoggedIn()) {
+                $this->cartManagement->placeOrder($cartId);
+            } else {
+                $this->guestCartManagement->placeOrder($cartId);
+            }
+            $result->setData('success', true);
+            $result->setData('error', false);
 
-        $this->_eventManager->dispatch(
-            'checkout_controller_onepage_saveOrder',
-            [
-                'result' => $result,
-                'action' => $this
-            ]
-        );
-        $this->_redirect('checkout/onepage/success');
+            $this->_eventManager->dispatch(
+                'checkout_controller_onepage_saveOrder',
+                [
+                    'result' => $result,
+                    'action' => $this
+                ]
+            );
+            $this->_redirect('checkout/onepage/success');
+        } catch(\Exception $e) {
+            $this->messageManager->addError($e->getMessage());
+            $this->_redirect('checkout/cart');
+        }
     }
 }

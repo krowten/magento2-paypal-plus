@@ -70,7 +70,6 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     public function isPUI()
     {
-        return true;
         return (
             $this->isPPP()
             && (

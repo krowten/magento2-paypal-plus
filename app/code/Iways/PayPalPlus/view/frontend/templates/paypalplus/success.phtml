@@ -1,61 +1,73 @@
-<?php if($this->isPUI()) : ?>
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * @var \Iways\PayPalPlus\Block\Onepage\Success $block
+ */
+?>
+<?php if($block->isPUI()) : ?>
     <div class="ppp-pui">
-        <p><?php echo Mage::helper('iways_paypalplus')->__(
+        <p><?php echo __(
                 'Please transfer the invoice amount to the given account within the payment deadline.'
             ); ?></p>
         <table>
             <tbody>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('Account holder:'); ?>
+                        <?php echo __('Account holder:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_account_holder_name'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_account_holder_name'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('Bank:'); ?>
+                        <?php echo __('Bank:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_bank_name'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_bank_name'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('IBAN:'); ?>
+                        <?php echo __('IBAN:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_international_bank_account_number'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_international_bank_account_number'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('BIC:'); ?>
+                        <?php echo __('BIC:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_bank_identifier_code'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_bank_identifier_code'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('Reference number:'); ?>
+                        <?php echo __('Reference number:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_reference_number'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_reference_number'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="ppp-pui-label">
-                        <?php echo Mage::helper('iways_paypalplus')->__('Payment due date:'); ?>
+                        <?php echo __('Payment due date:'); ?>
                     </td>
                     <td class="ppp-pui-value">
-                        <?php echo $this->getAdditionalInformation('ppp_pui_payment_due_date'); ?>
+                        <?php echo $block->getAdditionalInformation('ppp_payment_due_date'); ?>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-<?php elseif ($this->isPPP()): ?>
-    <div class="ppp-success"><?php echo $this->__('<i>processed by PayPal</i>');?></div>
+<?php elseif ($block->isPPP()): ?>
+    <div class="ppp-success"><?php echo __('<i>processed by PayPal</i>');?></div>
 <?php endif; ?>

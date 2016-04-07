@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Iways_PayPalPlus::css/iways-paypalplus.css"/>
+    </head>
+    <body>
+        <referenceContainer name="order.success.additional.info">
+            <block class="Iways\PayPalPlus\Block\Onepage\Success" name="paypalplus.info" cacheable="false"
+                   template="Iways_PayPalPlus::paypalplus/success.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

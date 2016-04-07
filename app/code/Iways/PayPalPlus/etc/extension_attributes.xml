@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+        <attribute code="payment_extends" type="Magento\Sales\Api\Data\OrderPaymentInterface" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Sales\Api\Data\OrderPaymentInterface">
+        <attribute code="ppp_reference_number" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_instruction_type" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_payment_due_date" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_note" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_bank_name" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_account_holder_name" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_international_bank_account_number" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_bank_identifier_code" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_routing_number" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_amount" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+        <attribute code="ppp_currency" type="string">
+            <resources>
+                <resource  ref="Magento_Sales::actions_view"/>
+            </resources>
+        </attribute>
+    </extension_attributes>
+</config>

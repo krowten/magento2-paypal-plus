@@ -13,4 +13,7 @@
             <argument name="methodList" xsi:type="object">Iways\PayPalPlus\Model\MethodList</argument>
         </arguments>
     </type>
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="paymentAddPpp" type="\Iways\PayPalPlus\Model\Plugin\AfterOrderPaymentGetExtensionAttributes"/>
+    </type>
 </config>

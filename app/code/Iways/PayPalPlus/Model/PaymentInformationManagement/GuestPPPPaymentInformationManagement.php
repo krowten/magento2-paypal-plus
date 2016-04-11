@@ -86,16 +86,16 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
+        $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
         if ($billingAddress) {
             $billingAddress->setEmail($email);
             $this->billingAddressManagement->assign($cartId, $billingAddress);
         } else {
-            $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
             $this->cartRepository->getActive($quoteIdMask->getQuoteId())->getBillingAddress()->setEmail($email);
         }
 
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
-        $this->patchPayment($cartId);
+        $this->patchPayment($quoteIdMask->getQuoteId());
         return true;
     }
 

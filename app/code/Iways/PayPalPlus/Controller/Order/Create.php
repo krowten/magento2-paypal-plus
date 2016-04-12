@@ -18,6 +18,8 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\DataObject;
 use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Magento\Sales\Model\OrderFactory;
 
 /**
  * PayPalPlus checkout controller
@@ -64,6 +66,11 @@ class Create extends \Magento\Framework\App\Action\Action
      */
     protected $quoteIdMaskFactory;
 
+    /**
+     * @var OrderSender
+     */
+    protected $orderSender;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Psr\Log\LoggerInterface $logger,
@@ -72,6 +79,8 @@ class Create extends \Magento\Framework\App\Action\Action
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Magento\Quote\Api\GuestCartManagementInterface $guestCartManagement,
         QuoteIdMaskFactory $quoteIdMaskFactory,
+        OrderSender $orderSender,
+        OrderFactory $orderFactory,
         Session $customerSession
     ) {
         $this->logger = $logger;
@@ -81,23 +90,36 @@ class Create extends \Magento\Framework\App\Action\Action
         $this->guestCartManagement = $guestCartManagement;
         $this->customerSession = $customerSession;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
+        $this->orderSender = $orderSender;
+        $this->orderFactory = $orderFactory;
         parent::__construct($context);
 
     }
 
     /**
-     * success
+     * Execute
      */
     public function execute()
     {
         try {
             $cartId = $this->checkoutSession->getQuoteId();
             $result = new DataObject();
-            if($this->customerSession->isLoggedIn()) {
-                $this->cartManagement->placeOrder($cartId);
+            if ($this->customerSession->isLoggedIn()) {
+                $orderId = $this->cartManagement->placeOrder($cartId);
             } else {
                 $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'quote_id');
-                $this->guestCartManagement->placeOrder($quoteIdMask->getMaskedId());
+                $orderId = $this->guestCartManagement->placeOrder($quoteIdMask->getMaskedId());
+            }
+
+            if ($orderId) {
+                $order = $this->orderFactory->create()->load($orderId);
+                if ($order->getCanSendNewEmailFlag()) {
+                    try {
+                        $this->orderSender->send($order);
+                    } catch (\Exception $e) {
+                        $this->logger->critical($e);
+                    }
+                }
             }
             $result->setData('success', true);
             $result->setData('error', false);
@@ -110,7 +132,8 @@ class Create extends \Magento\Framework\App\Action\Action
                 ]
             );
             $this->_redirect('checkout/onepage/success');
-        } catch(\Exception $e) {
+        } catch
+        (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
             $this->_redirect('checkout/cart');
         }

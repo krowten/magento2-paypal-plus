@@ -15,6 +15,11 @@ namespace Iways\PayPalPlus\Model;
 
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class Payment
+ *
+ * @package Iways\PayPalPlus\Model
+ */
 class Payment extends \Magento\Payment\Model\Method\AbstractMethod
 {
     const PPP_STATUS_APPROVED = 'approved';
@@ -79,10 +84,33 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      */
     protected $salesOrderPaymentTransactionFactory;
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $ppLogger;
+
+    /**
+     * Payment constructor.
+     * @param \Magento\Framework\App\Request\Http $request
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param ApiFactory $payPalPlusApiFactory
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Iways\PayPalPlus\Helper\Data $payPalPlusHelper
+     * @param \Magento\Sales\Model\Order\Payment\TransactionFactory $salesOrderPaymentTransactionFactory
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
+     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory
+     * @param \Magento\Payment\Helper\Data $paymentData
+     * @param \Magento\Payment\Model\Method\Logger $logger
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param array $data
+     */
     public function __construct(
         \Magento\Framework\App\Request\Http $request,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
+        ApiFactory $payPalPlusApiFactory,
         \Magento\Customer\Model\Session $customerSession,
         \Iways\PayPalPlus\Helper\Data $payPalPlusHelper,
         \Magento\Sales\Model\Order\Payment\TransactionFactory $salesOrderPaymentTransactionFactory,
@@ -110,7 +138,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * Authorize payment method
      *
-     * @param \Magento\Payment\Model\InfoInterface
+     * @param \Magento\Payment\Model\InfoInterface $payment
      * @param float $amount
      *
      * @throws \Exception Payment could not be executed
@@ -213,7 +241,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * Refund specified amount for payment
      *
-     * @param Magento\Payment\Model\InfoInterface
+     * @param \Magento\Payment\Model\InfoInterface $payment
      * @param float $amount
      *
      * @return \Iways\PayPalPlus\Model\Payment

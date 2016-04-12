@@ -19,6 +19,8 @@ use Magento\Payment\Model\Method\Free;
 class MethodList extends \Magento\Payment\Model\MethodList
 {
     /**
+     * Construct
+     *
      * @param \Magento\Payment\Helper\Data $paymentHelper
      * @param \Magento\Payment\Model\Checks\SpecificationFactory $specificationFactory
      */
@@ -30,6 +32,8 @@ class MethodList extends \Magento\Payment\Model\MethodList
     }
 
     /**
+     * Get Available Methods
+     *
      * @param \Magento\Quote\Api\Data\CartInterface $quote
      * @param boolean $checkPPP
      * @return \Magento\Payment\Model\MethodInterface[]
@@ -43,7 +47,7 @@ class MethodList extends \Magento\Payment\Model\MethodList
         foreach ($this->paymentHelper->getStoreMethods($store, $quote) as $method) {
             if ($this->_canUseMethod($method, $quote)) {
                 $method->setInfoInstance($quote->getPayment());
-                if($checkPPP && $method->getCode() == Payment::CODE) {
+                if ($checkPPP && $method->getCode() == Payment::CODE) {
                     return [$method];
                 }
                 $methods[] = $method;
@@ -53,12 +57,25 @@ class MethodList extends \Magento\Payment\Model\MethodList
             }
         }
         if (!$isFreeAdded && !$quote->getGrandTotal()) {
-            /** @var \Magento\Payment\Model\Method\Free $freeMethod */
-            $freeMethod = $this->paymentHelper->getMethodInstance(Free::PAYMENT_METHOD_FREE_CODE);
-            if ($freeMethod->isAvailableInConfig()) {
-                $freeMethod->setInfoInstance($quote->getPayment());
-                $methods[] = $freeMethod;
-            }
+            $methods = $this->addFree($methods, $quote);
+        }
+        return $methods;
+    }
+
+    /**
+     * Adds Free Method
+     *
+     * @param \Magento\Payment\Model\MethodInterface[] $methods
+     * @param \Magento\Quote\Api\Data\CartInterface $quote
+     * @return \Magento\Payment\Model\MethodInterface[] $methods
+     */
+    protected function addFree($methods, \Magento\Quote\Api\Data\CartInterface $quote)
+    {
+        /** @var \Magento\Payment\Model\Method\Free $freeMethod */
+        $freeMethod = $this->paymentHelper->getMethodInstance(Free::PAYMENT_METHOD_FREE_CODE);
+        if ($freeMethod->isAvailableInConfig()) {
+            $freeMethod->setInfoInstance($quote->getPayment());
+            $methods[] = $freeMethod;
         }
         return $methods;
     }

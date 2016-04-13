@@ -145,7 +145,7 @@ class Event
             $this->_order->queueNewOrderEmail()
                 ->addStatusHistoryComment(
                     __(
-                        'Notified customer about invoice #%s.',
+                        'Notified customer about invoice #%1.',
                         $invoice->getIncrementId()
                     )
                 )->setIsCustomerNotified(true)
@@ -185,7 +185,7 @@ class Event
             $this->_order
                 ->addStatusHistoryComment(
                     __(
-                        'Notified customer about creditmemo #%s.',
+                        'Notified customer about creditmemo #%1.',
                         $creditmemo->getIncrementId()
                     )
                 )->setIsCustomerNotified(true)

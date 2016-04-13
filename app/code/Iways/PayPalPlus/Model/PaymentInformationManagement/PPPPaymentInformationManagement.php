@@ -55,13 +55,13 @@ class PPPPaymentInformationManagement extends PaymentInformationManagement imple
      * @codeCoverageIgnore
      */
     public function __construct(
+        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Quote\Api\BillingAddressManagementInterface $billingAddressManagement,
         \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Magento\Checkout\Model\PaymentDetailsFactory $paymentDetailsFactory,
-        \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository,
-        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+        \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;

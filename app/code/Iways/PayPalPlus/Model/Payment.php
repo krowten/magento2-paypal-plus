@@ -47,7 +47,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * @var string
      */
-    protected $_infoBlockType = 'Iways\PayPalPlus\Block\Payment\Info';
+    protected $_infoBlockType = 'Iways\PayPalPlus\Block\PaymentInfo';
 
     /**
      * @var \Magento\Framework\App\Request\Http

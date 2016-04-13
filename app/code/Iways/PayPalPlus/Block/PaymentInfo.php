@@ -11,29 +11,20 @@
  * Copyright i-ways sales solutions GmbH © 2015. All Rights Reserved.
  * License http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
-namespace Iways\PayPalPlus\Block\Payment;
+namespace Iways\PayPalPlus\Block;
+
+use Iways\PayPalPlus\Model\Payment;
 
 /**
- * Iways PayPalPlus Payment Block
- *
- * @category   Iways
- * @package    Iways_PayPalPlus
- * @author robert
+ * Class Info
+ * @package Iways\PayPalPlus\Block\Payment
  */
-class Info extends \Magento\Payment\Block\Info
+class PaymentInfo extends \Magento\Payment\Block\Info
 {
     /**
      * @var string
      */
-    protected $_template = 'Iways_PayPalPlus::paypalplus/payment/info.phtml';
-
-    /**
-     * Set PayPal Plus template in construct
-     */
-    protected function _construct()
-    {
-        parent::_construct();
-    }
+    protected $_template = 'Iways_PayPalPlus::info/default.phtml';
 
     /**
      * Render as PDF
@@ -41,7 +32,7 @@ class Info extends \Magento\Payment\Block\Info
      */
     public function toPdf()
     {
-        $this->setTemplate('Iways_PayPalPlus::paypalplus/payment/pdf/info.phtml');
+        $this->setTemplate('Iways_PayPalPlus::info/pdf/default.phtml');
         return $this->toHtml();
     }
 
@@ -79,6 +70,8 @@ class Info extends \Magento\Payment\Block\Info
      */
     public function isPUI()
     {
-        return ($this->getInfo()->getData('ppp_instruction_type') == \Iways\PayPalPlus\Model\Payment::PPP_INSTRUCTION_TYPE) ? true : false;
+        return (
+            $this->getInfo()->getData('ppp_instruction_type') == Payment::PPP_INSTRUCTION_TYPE
+        ) ? true : false;
     }
 }

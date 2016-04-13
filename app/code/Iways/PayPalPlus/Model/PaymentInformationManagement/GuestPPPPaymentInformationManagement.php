@@ -51,30 +51,33 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
     protected $cartRepository;
 
     /**
+     * GuestPPPPaymentInformationManagement constructor.
+     * @param \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
+     * @param CartRepositoryInterface $quoteRepository
      * @param \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement
      * @param \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
      * @param \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement
      * @param \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory
-     * @param CartRepositoryInterface $cartRepository
-     * @codeCoverageIgnore
      */
     public function __construct(
+        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
+        CartRepositoryInterface $quoteRepository,
         \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement,
         \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement,
         \Magento\Quote\Api\GuestCartManagementInterface $cartManagement,
         \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement,
-        \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory,
-        CartRepositoryInterface $cartRepository,
-        \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
+        \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory
+
+
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;
         $this->cartManagement = $cartManagement;
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
-        $this->cartRepository = $cartRepository;
-        parent::__construct($payPalPlusApiFactory, $cartRepository);
+        $this->cartRepository = $quoteRepository;
+        parent::__construct($payPalPlusApiFactory, $quoteRepository);
     }
 
     /**

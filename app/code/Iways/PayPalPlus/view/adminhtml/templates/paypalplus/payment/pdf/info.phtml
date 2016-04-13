@@ -23,7 +23,7 @@
 <?php if ($specificInfo = $block->getSpecificInformation()): ?>
     <?php if ($block->isPUI()): ?>
         {{pdf_row_separator}}
-        <?php echo __('Please transfer the invoice amount to the given account within the payment deadline.'); ?>{{pdf_row_separator}}
+        <?php echo $block->escapeHtml(__('Please transfer the invoice amount to the given account within the payment deadline.')); ?>{{pdf_row_separator}}
         {{pdf_row_separator}}
     <?php endif; ?>
     <?php foreach ($specificInfo as $label => $value): ?>

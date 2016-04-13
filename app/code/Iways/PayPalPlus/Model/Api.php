@@ -859,16 +859,6 @@ class Api
     }
 
     /**
-     * Get current customer
-     *
-     * @return \Magento\Customer\Model\Customer
-     */
-    protected function getCustomer()
-    {
-        return Mage::helper('customer')->getCustomer();
-    }
-
-    /**
      * Check if PayPal credentails are valid for given configuration.
      *
      * Uses WebProfile::get_list()

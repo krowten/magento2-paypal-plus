@@ -26,7 +26,7 @@ $title = $block->escapeHtml($block->getMethod()->getTitle());
     <?php if ($specificInfo):?>
         <dd class="content">
             <?php if($block->isPui()) : ?>
-            <p><?php echo __('Please transfer the invoice amount to the given account within the payment deadline.'); ?></p>
+            <p><?php /* @noEscape */ echo __('Please transfer the invoice amount to the given account within the payment deadline.'); ?></p>
             <?php endif; ?>
             <table class="data table">
                 <caption class="table-caption"><?php /* @noEscape */ echo $title; ?></caption>

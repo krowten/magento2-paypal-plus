@@ -11,7 +11,6 @@
  * Copyright i-ways sales solutions GmbH © 2015. All Rights Reserved.
  * License http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
-
 namespace Iways\PayPalPlus\Block\Payment;
 
 /**
@@ -23,7 +22,6 @@ namespace Iways\PayPalPlus\Block\Payment;
  */
 class Info extends \Magento\Payment\Block\Info
 {
-
     /**
      * @var string
      */
@@ -59,10 +57,10 @@ class Info extends \Magento\Payment\Block\Info
         $payment = $this->getInfo();
         $info = array();
 
-        if(!$this->getIsSecureMode()) {
+        if (!$this->getIsSecureMode()) {
             $info[(string)__('Transaction ID')] = $this->getInfo()->getLastTransId();
         }
-        if($this->isPUI()) {
+        if ($this->isPUI()) {
             $info[(string)__('Account holder')] = $payment->getData('ppp_account_holder_name');
             $info[(string)__('Bank')] = $payment->getData('ppp_bank_name');
             $info[(string)__('IBAN')] = $payment->getData('ppp_international_bank_account_number');

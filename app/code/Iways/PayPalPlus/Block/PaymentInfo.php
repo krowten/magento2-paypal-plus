@@ -24,7 +24,7 @@ class PaymentInfo extends \Magento\Payment\Block\Info
     /**
      * @var string
      */
-    protected $_template = 'Iways_PayPalPlus::paypalplus/info/default.phtml';
+    protected $_template = 'paypalplus/info/default.phtml';
 
     /**
      * Render as PDF
@@ -32,7 +32,7 @@ class PaymentInfo extends \Magento\Payment\Block\Info
      */
     public function toPdf()
     {
-        $this->setTemplate('Iways_PayPalPlus::paypalplus/info/pdf/default.phtml');
+        $this->setTemplate('paypalplus/info/pdf/default.phtml');
         return $this->toHtml();
     }
 

@@ -261,7 +261,7 @@ class Event
             $transaction = $this->salesOrderPaymentTransactionFactory->create()->load($transactionId, 'txn_id');
             $this->_order = $this->salesOrderFactory->create()->load($transaction->getOrderId());
             if (!$this->_order->getId()) {
-                throw new \Magento\Framework\Exception\LocalizedException('Order not found.');
+                throw new \Magento\Framework\Exception\LocalizedException(__('Order not found.'));
             }
         }
         return $this->_order;

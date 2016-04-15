@@ -56,7 +56,6 @@ define(
                 serviceUrl, JSON.stringify(payload)
             ).done(
                 function () {
-                    customerData.invalidate('cart');
                     ppp.doCheckout();
                 }
             ).fail(

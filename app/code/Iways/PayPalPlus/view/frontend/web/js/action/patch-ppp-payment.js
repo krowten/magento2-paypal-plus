@@ -18,9 +18,10 @@ define(
         'Magento_Checkout/js/model/error-processor',
         'Magento_Customer/js/model/customer',
         'Magento_Checkout/js/action/get-totals',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Customer/js/customer-data'
     ],
-    function (quote, urlBuilder, storage, errorProcessor, customer, getTotalsAction, fullScreenLoader) {
+    function (quote, urlBuilder, storage, errorProcessor, customer, getTotalsAction, fullScreenLoader, customerData) {
         'use strict';
 
         return function (messageContainer, paymentData, ppp) {
@@ -55,6 +56,7 @@ define(
                 serviceUrl, JSON.stringify(payload)
             ).done(
                 function () {
+                    customerData.invalidate('cart');
                     ppp.doCheckout();
                 }
             ).fail(

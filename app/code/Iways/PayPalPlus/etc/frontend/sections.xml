@@ -23,12 +23,4 @@
         <section name="cart"/>
         <section name="checkout-data"/>
     </action>
-    <action name="paypalplus/order/create">
-        <section name="cart"/>
-        <section name="checkout-data"/>
-    </action>
-    <action name="checkout/onepage/success">
-        <section name="cart"/>
-        <section name="checkout-data"/>
-    </action>
 </config>

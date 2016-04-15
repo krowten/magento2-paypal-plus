@@ -15,6 +15,7 @@ namespace Iways\PayPalPlus\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Quote\Model\Quote;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Address;
@@ -719,18 +720,23 @@ class Api
     /**
      * Build Amount
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @return Amount
      */
     protected function buildAmount($quote)
     {
         $details = new Details();
         $details->setShipping($quote->getShippingAddress()->getBaseShippingAmount())
-            ->setTax($quote->getShippingAddress()->getBaseTaxAmount())
+            ->setTax(
+                $quote->getShippingAddress()->getBaseTaxAmount()
+                + $quote->getShippingAddress()->getBaseHiddenTaxAmount()
+            )
             ->setSubtotal(
-                $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getBaseHiddenTaxAmount()
+                $quote->getBaseSubtotal()
             );
 
+        $details->setShippingDiscount(-$quote->getShippingAddress()->getDiscountAmount());
+        
         $amount = new Amount();
         $amount->setCurrency($quote->getBaseCurrencyCode())
             ->setDetails($details)
@@ -808,7 +814,7 @@ class Api
             'design/header/logo_src',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
-        if($storeLogoPath) {
+        if ($storeLogoPath) {
             $path = $folderName . '/' . $storeLogoPath;
             return $this->urlBuilder
                 ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
@@ -826,6 +832,7 @@ class Api
     {
         return $this->payPalPlusHelper->resetWebProfileId();
     }
+
     /**
      * Save WebProfileId
      *

@@ -79,16 +79,3 @@
 <?php elseif ($block->isPPP()): ?>
     <div class="ppp-success"><?php /* @noEscape */ echo __('<i>processed by PayPal</i>');?></div>
 <?php endif; ?>
-<script type="text/javascript">
-    requirejs(
-        [
-            'Magento_Customer/js/customer-data'
-        ],
-        function (customerData) {
-            'use strict';
-            customerData.get("cart");
-        }
-    );
-
-
-</script>

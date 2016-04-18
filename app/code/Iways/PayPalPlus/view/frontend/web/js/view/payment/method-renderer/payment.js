@@ -83,7 +83,7 @@ define(
                         buttonLocation: "outside",
                         showPuiOnSandbox: self.showPuiOnSandbox,
                         showLoadingIndicator: self.showLoadingIndicator,
-                        country: self.country,
+                        country: self.getCountry(),
                         language: self.language,
                         preselection: "paypal",
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
@@ -155,6 +155,16 @@ define(
                 } else {
                     return this.placeOrder(data, event);
                 }
+            },
+            getCountry: function() {
+                try {
+                    if(quote.shippingAddress().countryId) {
+                        return quote.shippingAddress().countryId;
+                    }
+                }catch(e) {
+                    //console.log(e);
+                }
+                return this.country;
             }
         });
     }

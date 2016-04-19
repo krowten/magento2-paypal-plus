@@ -214,7 +214,7 @@ class Api
                 'log.LogLevel' => 'INFO'
             )
         );
-        $this->_apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', 'Magento_Cart_PayPalPlus');
+        $this->_apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', 'Magento_Cart_PayPalPlusMagento2');
         return $this;
     }
 

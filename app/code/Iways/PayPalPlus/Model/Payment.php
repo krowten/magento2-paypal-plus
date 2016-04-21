@@ -41,7 +41,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canCapturePartial = false;
     protected $_canCaptureOnce = false;
     protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = false;
+    protected $_canRefundInvoicePartial = true;
     protected $_canUseCheckout = true;
 
     /**

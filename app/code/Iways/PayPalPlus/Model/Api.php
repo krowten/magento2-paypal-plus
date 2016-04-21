@@ -735,7 +735,9 @@ class Api
                 $quote->getBaseSubtotal()
             );
 
-        $details->setShippingDiscount(-$quote->getShippingAddress()->getDiscountAmount());
+        if ($quote->getShippingAddress()->getDiscountAmount()) {
+            $details->setShippingDiscount(-$quote->getShippingAddress()->getDiscountAmount());
+        }
         
         $amount = new Amount();
         $amount->setCurrency($quote->getBaseCurrencyCode())

@@ -275,7 +275,7 @@ class Api
 
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))
-            ->setCancelUrl($this->urlBuilder->getUrl('checkout'));
+            ->setCancelUrl($this->urlBuilder->getUrl('paypalplus/checkout/cancel'));
 
         $payment = new PayPalPayment();
         $payment->setIntent("sale")

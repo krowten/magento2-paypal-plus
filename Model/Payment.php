@@ -135,6 +135,22 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->ppLogger = $context->getLogger();
     }
 
+
+    /**
+     * Check whether payment method can be used
+     *
+     * @param \Magento\Quote\Api\Data\CartInterface|null $quote
+     * @return bool
+     */
+    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    {
+        if ($quote && $quote->getIsVirtual()) {
+            return false;
+        }
+        return parent::isAvailable($quote);
+    }
+
+
     /**
      * Authorize payment method
      *

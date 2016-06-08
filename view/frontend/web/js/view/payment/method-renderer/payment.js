@@ -72,7 +72,7 @@ define(
                 var self = this;
                 quote.billingAddress.subscribe(function (newAddress) {
                     try {
-                        if(newAddress != null && newAddress.countryId != self.country) {
+                        if(self.canInitialise() && self.isInitialized && newAddress !== null && newAddress.countryId != self.country) {
                             self.country = newAddress.countryId;
                             self.isInitialized = false;
                             self.initPayPalPlusFrame();
@@ -132,7 +132,6 @@ define(
                 var pppThirdPartyMethods = [];
                 _.each(self.thirdPartyPaymentMethods, function (activeMethod, code) {
                     try {
-                        console.log(activeMethod);
                         self.paymentCodeMappings[self.thirdPartyPaymentMethods[code].methodName] = code;
                         pppThirdPartyMethods.push(self.thirdPartyPaymentMethods[code]);
                     } catch (e) {
@@ -169,8 +168,8 @@ define(
             },
             getCountry: function() {
                 try {
-                    if(quote.shippingAddress().countryId) {
-                        return quote.shippingAddress().countryId;
+                    if(quote.billingAddress().countryId) {
+                        return quote.billingAddress().countryId;
                     }
                 }catch(e) {
                     //console.log(e);

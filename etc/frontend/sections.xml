@@ -15,14 +15,14 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
-    <action name="rest/*/V1/carts/*/set-ppp-payment-information">
+    <!--<action name="rest/*/V1/carts/*/set-ppp-payment-information">
         <section name="cart"/>
         <section name="checkout-data"/>
     </action>
     <action name="rest/*/V1/guest-carts/*/set-ppp-payment-information">
         <section name="cart"/>
         <section name="checkout-data"/>
-    </action>
+    </action>-->
     <action name="paypalplus/order/create">
         <section name="cart"/>
         <section name="checkout-data"/>

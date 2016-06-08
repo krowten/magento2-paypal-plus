@@ -69,12 +69,23 @@ define(
             initObservable: function () {
                 this.initVars();
                 this.startIframeChecker(this);
+                var self = this;
+                quote.billingAddress.subscribe(function (newAddress) {
+                    try {
+                        if(newAddress != null && newAddress.countryId != self.country) {
+                            self.country = newAddress.countryId;
+                            self.isInitialized = false;
+                            self.initPayPalPlusFrame();
+                        }
+                    }catch (e) {console.log(e)}
+
+                }, this);
                 return this;
             },
             initPayPalPlusFrame: function () {
                 var self = this;
                 if (self.canInitialise() && !self.isInitialized) {
-                    self.selectPaymentMethod();
+                    //self.selectPaymentMethod();
                     self.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
                         placeholder: "ppplus",

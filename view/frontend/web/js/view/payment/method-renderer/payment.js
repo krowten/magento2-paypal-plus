@@ -80,12 +80,12 @@ define(
                     }catch (e) {console.log(e)}
 
                 }, this);
+                self.selectPaymentMethod();
                 return this;
             },
             initPayPalPlusFrame: function () {
                 var self = this;
                 if (self.canInitialise() && !self.isInitialized) {
-                    //self.selectPaymentMethod();
                     self.ppp = PAYPAL.apps.PPP({
                         approvalUrl: self.paymentExperience,
                         placeholder: "ppplus",

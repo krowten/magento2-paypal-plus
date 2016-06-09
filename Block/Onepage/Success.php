@@ -14,7 +14,6 @@
 namespace Iways\PayPalPlus\Block\Onepage;
 
 use Iways\PayPalPlus\Model\Payment;
-use Magento\Customer\Model\Context;
 use Magento\Sales\Model\Order;
 
 /**
@@ -23,30 +22,27 @@ use Magento\Sales\Model\Order;
 class Success extends \Magento\Framework\View\Element\Template
 {
     /**
+     * Store name config path
+     */
+    const STORE_NAME_PATH = 'general/store_information/name';
+
+    /**
+     * Checkout session
      * @var \Magento\Checkout\Model\Session
      */
     protected $_checkoutSession;
 
     /**
-     * @var \Magento\Sales\Model\Order\Config
-     */
-    protected $_orderConfig;
-
-    /**
-     * @var \Magento\Framework\App\Http\Context
-     */
-    protected $httpContext;
-
-    /**
+     * Order
      * @var Order
      */
     protected $_order;
 
     /**
+     * Construct
+     *
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Sales\Model\Order\Config $orderConfig
-     * @param \Magento\Framework\App\Http\Context $httpContext
      * @param array $data
      */
     public function __construct(
@@ -100,11 +96,21 @@ class Success extends \Magento\Framework\View\Element\Template
     /**
      * Wrapper for $payment->getData($key)
      *
-     * @param $key
+     * @param string $key
      * @return array|mixed|null
      */
     public function getAdditionalInformation($key)
     {
         return $this->_order->getPayment()->getData($key);
+    }
+
+    /**
+     * Get store name from config
+     *
+     * @return string|null
+     */
+    public function getStoreName()
+    {
+        return $this->_scopeConfig->getValue(self::STORE_NAME_PATH);
     }
 }

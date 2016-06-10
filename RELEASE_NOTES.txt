@@ -1,0 +1,6 @@
+==== 1.0.1 ====
+Added PUI legal text
+
+==== 1.0.0 ====
+PayPal PLUS is a solution where PayPal offers PayPal, Credit Card and ELV (pay upon invoice will be added in a later phase) as individual payment options on the payment selection page.
+Based on the payment method selected by the buyer, he will at a later stage be presented with either the PayPal Login page or an input mask for bank / credit card details.

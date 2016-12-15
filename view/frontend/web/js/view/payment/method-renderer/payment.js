@@ -67,6 +67,7 @@ define(
              * @override
              */
             initObservable: function () {
+                this._super();
                 this.initVars();
                 this.startIframeChecker(this);
                 var self = this;

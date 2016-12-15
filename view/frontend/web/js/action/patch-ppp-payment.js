@@ -18,10 +18,9 @@ define(
         'Magento_Checkout/js/model/error-processor',
         'Magento_Customer/js/model/customer',
         'Magento_Checkout/js/action/get-totals',
-        'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Customer/js/customer-data'
+        'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function (quote, urlBuilder, storage, errorProcessor, customer, getTotalsAction, fullScreenLoader, customerData) {
+    function (quote, urlBuilder, storage, errorProcessor, customer, getTotalsAction, fullScreenLoader) {
         'use strict';
 
         return function (messageContainer, paymentData, ppp) {

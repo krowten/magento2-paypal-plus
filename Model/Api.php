@@ -51,6 +51,9 @@ class Api
      */
     const WEBHOOK_URL_ALREADY_EXISTS = 'WEBHOOK_URL_ALREADY_EXISTS';
 
+    const PATCH_ADD = 'add';
+    const PATCH_REPLACE = 'replace';
+
     /**
      * @var null|ApiContext
      */
@@ -262,10 +265,6 @@ class Api
         $payer = $this->buildPayer($quote);
 
         $itemList = $this->buildItemList($quote, $taxFailure);
-        $shippingAddress = $this->buildShippingAddress($quote);
-        if ($shippingAddress) {
-            $itemList->setShippingAddress($shippingAddress);
-        }
 
         $amount = $this->buildAmount($quote);
 
@@ -313,22 +312,16 @@ class Api
             $payment = PayPalPayment::get($this->customerSession->getPayPalPaymentId(), $this->_apiContext);
             $patchRequest = new PatchRequest();
 
-            $transactions = $payment->getTransactions();
-            if ($transactions[0]->getItemList()->getShippingAddress() === null) {
-                $addressMode = 'add';
-            } else {
-                $addressMode = 'replace';
-            }
             $shippingAddress = $this->buildShippingAddress($quote);
             $addressPatch = new Patch();
-            $addressPatch->setOp($addressMode);
+            $addressPatch->setOp(self::PATCH_ADD);
             $addressPatch->setPath('/transactions/0/item_list/shipping_address');
             $addressPatch->setValue($shippingAddress);
             $patchRequest->addPatch($addressPatch);
 
             $payerInfo = $this->buildBillingAddress($quote);
             $payerInfoPatch = new Patch();
-            $payerInfoPatch->setOp('add');
+            $payerInfoPatch->setOp(self::PATCH_ADD);
             $payerInfoPatch->setPath('/potential_payer_info/billing_address');
             $payerInfoPatch->setValue($payerInfo);
             $patchRequest->addPatch($payerInfoPatch);
@@ -344,9 +337,6 @@ class Api
                 $patchRequest,
                 $this->_apiContext
             );
-
-            $this->logger->alert($payment);
-            $this->logger->alert($patchRequest);
             return $response;
         }
         return false;
@@ -524,7 +514,7 @@ class Api
     /**
      * Delete webhook with webhookId for PayPal APP $this->_apiContext
      *
-     * @param $webhookId
+     * @param int $webhookId
      * @return bool
      */
     public function deleteWebhook($webhookId)
@@ -628,10 +618,6 @@ class Api
     {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
-        $payerInfo = $this->buildPayerInfo($quote);
-        if ($payerInfo) {
-            $payer->setPayerInfo($payerInfo);
-        }
         return $payer;
     }
 
@@ -730,6 +716,8 @@ class Api
             ->setTax(
                 $quote->getShippingAddress()->getBaseTaxAmount()
                 + $quote->getShippingAddress()->getBaseHiddenTaxAmount()
+                + $quote->getBillingAddress()->getBaseTaxAmount()
+                + $quote->getBillingAddress()->getBaseHiddenTaxAmount()
             )
             ->setSubtotal(
                 $quote->getBaseSubtotal()

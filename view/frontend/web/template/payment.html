@@ -16,14 +16,15 @@
         <div class="actions-toolbar">
             <div class="primary">
                 <button class="action primary checkout"
-                        type="submit"
                         id="place-ppp-order"
+                        type="submit"
                         data-bind="
                         click: placePPPOrder,
-                        attr: {title: $t('Place Order')},
-                        css: {disabled: !isPlaceOrderActionAllowed()},
-                        ">
-                    <span data-bind="text: $t('Place Order')"></span>
+                        attr: {'title': $t('Place Order')},
+                        css: {disabled: !isPlaceOrderActionAllowed()}
+                        "
+                        disabled>
+                    <span data-bind="i18n: 'Place Order'"></span>
                 </button>
             </div>
         </div>

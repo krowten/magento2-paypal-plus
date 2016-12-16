@@ -1,3 +1,6 @@
+==== 1.0.2 ====
+Fixed Javascript errors with Magento 2.1 on payment method block.
+
 ==== 1.0.1 ====
 Added PUI legal text
 

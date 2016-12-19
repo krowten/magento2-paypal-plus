@@ -31,6 +31,7 @@
                 <active>0</active>
                 <order_status>processing</order_status>
                 <allowspecific>0</allowspecific>
+                <sort_order>-1</sort_order>
             </iways_paypalplus_payment>
         </payment>
     </default>

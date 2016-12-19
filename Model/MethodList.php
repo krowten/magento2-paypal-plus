@@ -14,10 +14,17 @@
 
 namespace Iways\PayPalPlus\Model;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Payment\Model\Method\Free;
 
 class MethodList extends \Magento\Payment\Model\MethodList
 {
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
     /**
      * Construct
      *
@@ -26,8 +33,11 @@ class MethodList extends \Magento\Payment\Model\MethodList
      */
     public function __construct(
         \Magento\Payment\Helper\Data $paymentHelper,
-        \Magento\Payment\Model\Checks\SpecificationFactory $specificationFactory
+        \Magento\Payment\Model\Checks\SpecificationFactory $specificationFactory,
+        ScopeConfigInterface $scopeConfig
+
     ) {
+        $this->scopeConfig = $scopeConfig;
         parent::__construct($paymentHelper, $specificationFactory);
     }
 
@@ -41,16 +51,33 @@ class MethodList extends \Magento\Payment\Model\MethodList
      */
     public function getAvailableMethods(\Magento\Quote\Api\Data\CartInterface $quote = null, $checkPPP = true)
     {
+        if ($checkPPP) {
+            $allowedPPPMethods = explode(
+                ',',
+                $this->scopeConfig->getValue(
+                    'payment/iways_paypalplus_payment/third_party_moduls',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                )
+            );
+        }
         $store = $quote ? $quote->getStoreId() : null;
         $methods = [];
         $isFreeAdded = false;
         foreach ($this->paymentHelper->getStoreMethods($store, $quote) as $method) {
             if ($this->_canUseMethod($method, $quote)) {
                 $method->setInfoInstance($quote->getPayment());
-                if ($checkPPP && $method->getCode() == Payment::CODE) {
-                    return [$method];
+                if ($checkPPP) {
+                    if (
+                        $method->getCode() == Payment::CODE
+                        || !in_array($method->getCode(), $allowedPPPMethods)
+                    ) {
+                        $methods[] = $method;
+                    }
+
+                } else {
+                    $methods[] = $method;
                 }
-                $methods[] = $method;
+
                 if ($method->getCode() == Free::PAYMENT_METHOD_FREE_CODE) {
                     $isFreeAdded = true;
                 }

@@ -46,7 +46,7 @@ class PaymentInfo extends \Magento\Payment\Block\Info
     {
         $transport = parent::_prepareSpecificInformation($transport);
         $payment = $this->getInfo();
-        $info = array();
+        $info = [];
 
         if (!$this->getIsSecureMode()) {
             $info[(string)__('Transaction ID')] = $this->getInfo()->getLastTransId();

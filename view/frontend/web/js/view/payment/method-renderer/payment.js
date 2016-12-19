@@ -82,6 +82,17 @@ define(
 
                 }, this);
                 self.selectPaymentMethod();
+                self.isPPPMethod = ko.computed(function () {
+                    if(quote.paymentMethod() && (
+                            quote.paymentMethod().method == 'iways_paypalplus_payment'
+                            || typeof self.thirdPartyPaymentMethods[quote.paymentMethod().method] !== "undefined"
+                        )
+                    ) {
+                        return quote.paymentMethod().method;
+                    }
+                    self.ppp.deselectPaymentMethod();
+                    return null;
+                });
                 return this;
             },
             initPayPalPlusFrame: function () {
@@ -102,10 +113,12 @@ define(
                         onThirdPartyPaymentMethodSelected: function (data) {
                             self.lastCall = 'onThirdPartyPaymentMethodSelected';
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
+                            self.selectPaymentMethod();
                         },
                         enableContinue: function () {
                             if (self.lastCall != 'onThirdPartyPaymentMethodSelected') {
                                 self.selectedMethod = 'iways_paypalplus_payment';
+                                self.selectPaymentMethod();
                             }
                             self.lastCall = 'enableContinue';
                             self.isPaymentMethodSelected = true;
@@ -176,7 +189,7 @@ define(
                     //console.log(e);
                 }
                 return this.country;
-            }
+            },
         });
     }
 );

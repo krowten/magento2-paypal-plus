@@ -115,13 +115,11 @@ class ValidateObserver implements ObserverInterface
      */
     protected function getDefaultStoreId(\Magento\Framework\Event\Observer $observer)
     {
-        $website = $observer->getWebsite();
-        if ($website) {
-            $website = $this->storeManager
-                ->getWebsite($website)
-                ->getDefaultGroup()
-                ->getDefaultStoreId();
+        $store = $observer->getStore();
+
+        if ($store) {
+            return $store;
         }
-        return $website;
+        return null;
     }
 }

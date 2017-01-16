@@ -282,7 +282,7 @@ class Api
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
-
+        $this->logger->info(print_r($payment, true));
         try {
             $response = $payment->create($this->_apiContext);
             $this->customerSession->setPayPalPaymentId($response->getId());
@@ -726,7 +726,7 @@ class Api
         if ($quote->getShippingAddress()->getDiscountAmount()) {
             $details->setShippingDiscount(-$quote->getShippingAddress()->getDiscountAmount());
         }
-        
+
         $amount = new Amount();
         $amount->setCurrency($quote->getBaseCurrencyCode())
             ->setDetails($details)
@@ -794,10 +794,10 @@ class Api
     protected function getHeaderImage()
     {
         if ($this->scopeConfig->getValue('iways_paypalplus/api/hdrimg',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE)
         ) {
             return $this->scopeConfig->getValue('iways_paypalplus/api/hdrimg',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
         }
         $folderName = \Magento\Config\Model\Config\Backend\Image\Logo::UPLOAD_DIR;
         $storeLogoPath = $this->scopeConfig->getValue(
@@ -807,7 +807,7 @@ class Api
         if ($storeLogoPath) {
             $path = $folderName . '/' . $storeLogoPath;
             return $this->urlBuilder
-                ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
+                    ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
         }
         return $this->assetRepo->getUrlWithParams('images/logo.svg', ['_secure' => true]);
 

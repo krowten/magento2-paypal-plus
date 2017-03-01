@@ -724,7 +724,12 @@ class Api
             );
 
         if ($quote->getShippingAddress()->getDiscountAmount()) {
-            $details->setShippingDiscount(-$quote->getShippingAddress()->getDiscountAmount());
+            $details->setShippingDiscount(
+                -(
+                    $quote->getShippingAddress()->getDiscountAmount()
+                    + $quote->getShippingAddress()->getBaseDiscountTaxCompensationAmount()
+                )
+            );
         }
 
         $amount = new Amount();

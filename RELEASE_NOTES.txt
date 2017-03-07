@@ -1,3 +1,6 @@
+==== 1.0.4 ====
+Fixed tax calculation with special discount settings
+
 ==== 1.0.3 ====
 Fixed always failing credential validation on payment method config save.
 

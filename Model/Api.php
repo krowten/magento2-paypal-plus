@@ -282,7 +282,7 @@ class Api
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
-        $this->logger->info(print_r($payment, true));
+
         try {
             $response = $payment->create($this->_apiContext);
             $this->customerSession->setPayPalPaymentId($response->getId());

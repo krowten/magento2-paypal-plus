@@ -27,6 +27,25 @@ define(
             var serviceUrl,
                 payload;
 
+            try {
+                // IWD_Opc Order Comment Support
+                var orderCommentConfig = window.checkoutConfig.show_hide_custom_block;
+                if(orderCommentConfig) // true
+                {
+                    var order_comments = jQuery('[name="comment-code"]').val();
+
+                    if(typeof(paymentData.additional_data) === 'undefined'
+                        || paymentData.additional_data === null
+                    ){
+                        paymentData.additional_data = {comments:order_comments};
+                    }else{
+                        paymentData.additional_data.comments = order_comments;
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
             /**
              * Checkout for guest and registered customer.
              */

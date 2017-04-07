@@ -47,16 +47,20 @@ class PPPPaymentInformationManagement extends PaymentInformationManagement imple
     protected $cartTotalsRepository;
 
     /**
+     * PPPPaymentInformationManagement constructor.
+     * @param \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
+     * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+     * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Quote\Api\BillingAddressManagementInterface $billingAddressManagement
      * @param \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
-     * @param PaymentDetailsFactory $paymentDetailsFactory
+     * @param \Magento\Checkout\Model\PaymentDetailsFactory $paymentDetailsFactory
      * @param \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository
-     * @codeCoverageIgnore
      */
     public function __construct(
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Magento\Customer\Model\Session $customerSession,
         \Magento\Quote\Api\BillingAddressManagementInterface $billingAddressManagement,
         \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
@@ -68,7 +72,7 @@ class PPPPaymentInformationManagement extends PaymentInformationManagement imple
         $this->cartManagement = $cartManagement;
         $this->paymentDetailsFactory = $paymentDetailsFactory;
         $this->cartTotalsRepository = $cartTotalsRepository;
-        parent::__construct($payPalPlusApiFactory, $quoteRepository);
+        parent::__construct($payPalPlusApiFactory, $quoteRepository, $customerSession);
     }
 
     /**
@@ -82,6 +86,7 @@ class PPPPaymentInformationManagement extends PaymentInformationManagement imple
         if ($billingAddress) {
             $this->billingAddressManagement->assign($cartId, $billingAddress);
         }
+        $paymentMethod = $this->handleComment($paymentMethod);
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
         $this->patchPayment($cartId);
         return true;

@@ -18,6 +18,8 @@ use Magento\Payment\Model\Method\Free;
 
 class MethodList extends \Magento\Payment\Model\MethodList
 {
+    const AMAZON_PAYMENT = 'amazon_payment';
+
     /**
      * Construct
      *
@@ -47,8 +49,11 @@ class MethodList extends \Magento\Payment\Model\MethodList
         foreach ($this->paymentHelper->getStoreMethods($store, $quote) as $method) {
             if ($this->_canUseMethod($method, $quote)) {
                 $method->setInfoInstance($quote->getPayment());
-                if ($checkPPP && $method->getCode() == Payment::CODE) {
-                    return [$method];
+                if ($checkPPP) {
+                    If ($method->getCode() == Payment::CODE || $method->getCode() == self::AMAZON_PAYMENT) {
+                        $methods[] = $method;
+                    }
+                    continue;
                 }
                 $methods[] = $method;
                 if ($method->getCode() == Free::PAYMENT_METHOD_FREE_CODE) {

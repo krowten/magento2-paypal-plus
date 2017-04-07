@@ -71,6 +71,11 @@ class Create extends \Magento\Framework\App\Action\Action
      */
     protected $orderSender;
 
+    /**
+     * @var \Magento\Sales\Model\Order\Status\HistoryFactory
+     */
+    protected $historyFactory;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Psr\Log\LoggerInterface $logger,
@@ -81,6 +86,7 @@ class Create extends \Magento\Framework\App\Action\Action
         QuoteIdMaskFactory $quoteIdMaskFactory,
         OrderSender $orderSender,
         OrderFactory $orderFactory,
+        \Magento\Sales\Model\Order\Status\HistoryFactory $historyFactory,
         Session $customerSession
     ) {
         $this->logger = $logger;
@@ -92,6 +98,7 @@ class Create extends \Magento\Framework\App\Action\Action
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->orderSender = $orderSender;
         $this->orderFactory = $orderFactory;
+        $this->historyFactory = $historyFactory;
         parent::__construct($context);
 
     }
@@ -120,6 +127,28 @@ class Create extends \Magento\Framework\App\Action\Action
                         $this->logger->critical($e);
                     }
                 }
+                try {
+                    // IWD_Opc Order Comment
+                    if ($this->customerSession->getOrderComment()) {
+                        if ($order->getData('entity_id')) {
+                            /** @param string $status */
+                            $status = $order->getData('status');
+                            /** @param \Magento\Sales\Model\Order\Status\HistoryFactory $history */
+                            $history = $this->historyFactory->create();
+                            // set comment history data
+                            $history->setData('comment', strip_tags($this->customerSession->getOrderComment()));
+                            $history->setData('parent_id', $orderId);
+                            $history->setData('is_visible_on_front', 1);
+                            $history->setData('is_customer_notified', 0);
+                            $history->setData('entity_name', 'order');
+                            $history->setData('status', $status);
+                            $history->save();
+                            $this->customerSession->setOrderComment(null);
+                        }
+                    }
+                } catch (\Exception $e) {
+
+                }
             }
             $result->setData('success', true);
             $result->setData('error', false);
@@ -132,8 +161,7 @@ class Create extends \Magento\Framework\App\Action\Action
                 ]
             );
             $this->_redirect('checkout/onepage/success');
-        } catch
-        (\Exception $e) {
+        } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
             $this->_redirect('checkout/cart');
         }

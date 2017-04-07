@@ -54,6 +54,7 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
      * GuestPPPPaymentInformationManagement constructor.
      * @param \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
      * @param CartRepositoryInterface $quoteRepository
+     * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement
      * @param \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
@@ -63,6 +64,7 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
     public function __construct(
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
         CartRepositoryInterface $quoteRepository,
+        \Magento\Customer\Model\Session $customerSession,
         \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement,
         \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement,
         \Magento\Quote\Api\GuestCartManagementInterface $cartManagement,
@@ -77,7 +79,7 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->cartRepository = $quoteRepository;
-        parent::__construct($payPalPlusApiFactory, $quoteRepository);
+        parent::__construct($payPalPlusApiFactory, $quoteRepository, $customerSession);
     }
 
     /**
@@ -96,7 +98,7 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
         } else {
             $this->cartRepository->getActive($quoteIdMask->getQuoteId())->getBillingAddress()->setEmail($email);
         }
-
+        $paymentMethod = $this->handleComment($paymentMethod);
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
         $this->patchPayment($quoteIdMask->getQuoteId());
         return true;

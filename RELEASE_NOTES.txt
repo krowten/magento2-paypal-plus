@@ -1,3 +1,9 @@
+==== 1.0.5 ====
+Compatibility with Amazon_Payment
+Compatibility with IWD_Opc
+Compatibility with Swissup_Firecheckout
+Compatibility with Magestore_OneStepCheckout
+
 ==== 1.0.4 ====
 Fixed tax calculation with special discount settings
 

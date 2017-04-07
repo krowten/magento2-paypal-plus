@@ -30,17 +30,34 @@ class PaymentInformationManagement
      */
     protected $quoteManagement;
 
+    /**
+     * @var \Magento\Customer\Model\Session
+     */
+    protected $customerSession;
+
     public function __construct(
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
-    )
-    {
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Magento\Customer\Model\Session $customerSession
+    ) {
         $this->payPalPlusApiFactory = $payPalPlusApiFactory;
         $this->quoteManagement = $quoteRepository;
+        $this->customerSession = $customerSession;
     }
 
-    public function patchPayment($cartId) {
+    public function patchPayment($cartId)
+    {
         $quote = $this->quoteManagement->getActive($cartId);
         return $this->payPalPlusApiFactory->create()->patchPayment($quote);
+    }
+
+    public function handleComment($paymentMethod)
+    {
+        $this->customerSession->setOrderComment(null);
+        $additionalData = $paymentMethod->getAdditionalData();
+        if (isset($additionalData['comments']) && !empty($additionalData['comments'])) {
+            $this->customerSession->setOrderComment($additionalData['comments']);
+        }
+        return $paymentMethod;
     }
 }

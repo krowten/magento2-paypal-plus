@@ -1,3 +1,6 @@
+==== 1.1.0 ====
+Added third party payment modul support outside iframe
+
 ==== 1.0.5 ====
 Compatibility with Amazon_Payment
 Compatibility with IWD_Opc

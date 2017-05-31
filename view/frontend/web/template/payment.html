@@ -1,19 +1,19 @@
-<div class="payment-method" data-bind="css: {'_active': true}">
+<div class="payment-method _active">
     <div class="payment-method-content">
         <div id="ppplus"></div>
         <!-- ko with: initPayPalPlusFrame() -->
         <!-- /ko -->
-        <div class="payment-method-billing-address">
+        <div class="payment-method-billing-address" data-bind="style: { display: isPPPMethod() ? 'block' : 'none' }">
             <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
-        <div class="checkout-agreements-block">
+        <div class="checkout-agreements-block"  data-bind="style: { display: isPPPMethod() ? 'block' : 'none' }">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
-        <div class="actions-toolbar">
+        <div class="actions-toolbar" data-bind="style: { display: isPPPMethod() ? 'block' : 'none' }">
             <div class="primary">
                 <button class="action primary checkout"
                         id="place-ppp-order"

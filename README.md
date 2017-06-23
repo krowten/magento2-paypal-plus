@@ -45,4 +45,4 @@ To initialize the Database updates you must run following command afterwards:
 The Magento 2 PayPal Plus module should now be installed and ready to use.
 
 ## Issues
-Please use our Servicedesk at: https://i-ways.atlassian.net/servicedesk/customer/portal/3
+Please use our Servicedesk at: https://support.i-ways.net/hc/de

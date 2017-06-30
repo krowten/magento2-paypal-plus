@@ -1,3 +1,6 @@
+==== 1.1.1 ====
+Added token cache to reduce API-Calls
+
 ==== 1.1.0 ====
 Added third party payment modul support outside iframe
 

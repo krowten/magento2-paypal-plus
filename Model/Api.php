@@ -210,6 +210,11 @@ class Api
             array(
                 'http.ConnectionTimeOut' => 30,
                 'http.Retry' => 1,
+                'cache.enabled' => $this->scopeConfig->getValue(
+                    'iways_paypalplus/dev/token_cache',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                    $website
+                ),
                 'mode' => $this->_mode,
                 'log.LogEnabled' => $this->scopeConfig->getValue('iways_paypalplus/dev/debug',
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),

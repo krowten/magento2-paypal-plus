@@ -106,6 +106,12 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>iways_paypalplus/dev/pui_sandbox</config_path>
                     </field>
+                    <field id="token_cache" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Cache access token</label>
+                        <comment>Reduces API calls</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>iways_paypalplus/dev/token_cache</config_path>
+                    </field>
                     <field id="web_profile_id" translate="label" type="text" sortOrder="60" showInDefault="0" showInWebsite="0" showInStore="0">
                         <label>Web-Profile ID</label>
                         <config_path>iways_paypalplus/dev/web_profile_id</config_path>

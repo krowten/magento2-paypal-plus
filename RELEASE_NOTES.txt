@@ -1,3 +1,6 @@
+==== 1.1.2 ====
+Fix JS Script error on empty third party method array
+
 ==== 1.1.1 ====
 Added token cache to reduce API-Calls
 

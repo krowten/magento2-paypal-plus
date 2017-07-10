@@ -162,9 +162,6 @@ class ConfigProvider implements ConfigProviderInterface
                 $methods[$paymentMethod->getCode()] = $method;
             }
         }
-        if ($methods) {
-            return $methods;
-        }
-        return [];
+        return $methods;
     }
 }

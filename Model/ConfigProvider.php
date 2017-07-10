@@ -165,6 +165,6 @@ class ConfigProvider implements ConfigProviderInterface
         if ($methods) {
             return $methods;
         }
-        return null;
+        return [];
     }
 }

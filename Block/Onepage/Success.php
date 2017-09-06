@@ -30,20 +30,20 @@ class Success extends \Magento\Framework\View\Element\Template
      * Checkout session
      * @var \Magento\Checkout\Model\Session
      */
-    protected $_checkoutSession;
+    protected $checkoutSession;
 
     /**
      * Order
      * @var Order
      */
-    protected $_order;
+    protected $order;
 
     /**
      * Construct
      *
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param array $data
+     * @param [] $data
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -51,8 +51,8 @@ class Success extends \Magento\Framework\View\Element\Template
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->_checkoutSession = $checkoutSession;
-        $this->_order = $this->_checkoutSession->getLastRealOrder();
+        $this->checkoutSession = $checkoutSession;
+        $this->order = $this->checkoutSession->getLastRealOrder();
     }
 
     /**
@@ -61,7 +61,7 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     public function isPPP()
     {
-        if ($this->_order->getPayment()->getMethodInstance()->getCode() == Payment::CODE) {
+        if ($this->order->getPayment()->getMethodInstance()->getCode() == Payment::CODE) {
             return true;
         }
         return false;
@@ -77,7 +77,7 @@ class Success extends \Magento\Framework\View\Element\Template
         return (
             $this->isPPP()
             && (
-                $this->_order->getPayment()->getData('ppp_instruction_type')
+                $this->order->getPayment()->getData('ppp_instruction_type')
                 == Payment::PPP_INSTRUCTION_TYPE
             )
         ) ? true : false;
@@ -90,7 +90,7 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     public function hasPaymentInstruction()
     {
-        return ($this->isPPP() && $this->_order->getPayment()->getData('ppp_instruction_type')) ? true : false;
+        return ($this->isPPP() && $this->order->getPayment()->getData('ppp_instruction_type')) ? true : false;
     }
 
     /**
@@ -101,7 +101,7 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     public function getAdditionalInformation($key)
     {
-        return $this->_order->getPayment()->getData($key);
+        return $this->order->getPayment()->getData($key);
     }
 
     /**

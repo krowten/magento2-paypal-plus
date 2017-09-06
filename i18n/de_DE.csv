@@ -45,3 +45,4 @@
 "%1 has assigned the claim against you on basis of a factoring agreement to PayPal (Europe) S.à r.l. et Cie, S.C.A. You will only be released from your debt by paying to PayPal (Europe) S.à r.l. et Cie, S.C.A.","%1 hat die Forderung gegen Sie im Rahmen eines laufenden Factoringvertrages an die PayPal (Europe) S.àr.l. et Cie, S.C.A. abgetreten. Zahlungen mit schuldbefreiender Wirkung können nur an die PayPal (Europe) S.àr.l. et Cie, S.C.A. geleistet werden."
 "Cache access token","Zugriffstoken zwischenspeichern"
 "Reduces API calls","Reduziert die API-Aufrufe"
+"Only available for merchants located in Germany. Please switch your merchant country to Germany. (Merchant Location -> Merchant Country -> Germany)","Nur verfügbar für Händler mit Standort in Deutschland. Bitte stellen Sie den Händlerstandort auf Deutschland. Händlerstandort -> Händlerland -> Deutschland"

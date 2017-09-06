@@ -70,15 +70,13 @@ class Index extends \Magento\Framework\App\Action\Action
             $data = file_get_contents('php://input');
             /** @var \PayPal\Api\WebhookEvent $webhookEvent */
             $webhookEvent = $this->_apiFactory->create()->validateWebhook($data);
-            if(!$webhookEvent) {
+            if (!$webhookEvent) {
                 throw new LocalizedException(__('Event not found.'));
             }
             $this->_webhookEventFactory->create()->processWebhookRequest($webhookEvent);
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->_logger->critical($e);
             $this->getResponse()->setStatusHeader(503, '1.1', 'Service Unavailable')->sendResponse();
-            /** @todo eliminate usage of exit statement */
-            exit;
         }
     }
 }

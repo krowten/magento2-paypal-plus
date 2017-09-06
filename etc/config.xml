@@ -32,6 +32,7 @@
                 <order_status>processing</order_status>
                 <allowspecific>0</allowspecific>
                 <sort_order>-1</sort_order>
+                <group>paypal</group>
             </iways_paypalplus_payment>
         </payment>
     </default>

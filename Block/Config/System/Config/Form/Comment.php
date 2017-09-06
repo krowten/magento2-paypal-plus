@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * NOTICE OF LICENSE
  *
@@ -12,11 +11,18 @@
  * Copyright i-ways sales solutions GmbH © 2015. All Rights Reserved.
  * License http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Iways_PayPalPlus" setup_version="2.0.0">
-        <sequence>
-            <module name="Magento_Paypal" />
-        </sequence>
-    </module>
-</config>
+namespace Iways\PayPalPlus\Block\Config\System\Config\Form;
+
+class Comment extends \Magento\Config\Block\System\Config\Form\Field
+{
+    /**
+     * Retrieve HTML markup for given form element
+     *
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
+    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
+        return $this->_decorateRowHtml($element, __($element->getComment()));
+    }
+}

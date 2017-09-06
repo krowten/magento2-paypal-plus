@@ -15,6 +15,16 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
+        <section id="payment">
+            <group id="iways_paypalplus_section" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PayPalPlus Settings</label>
+                <field id="germany_only" type="text" translate="label comment" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Germany only</label>
+                    <comment><![CDATA[Only available for merchants located in Germany. Please switch your merchant country to Germany. (Merchant Location -> Merchant Country -> Germany)]]></comment>
+                    <frontend_model>Iways\PayPalPlus\Block\Config\System\Config\Form\Comment</frontend_model>
+                </field>
+            </group>
+        </section>
         <section id="payment_de">
             <group id="iways_paypalplus_section" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>PayPalPlus Settings</label>
@@ -22,6 +32,11 @@
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>complex paypalplus-section</fieldset_css>
                 <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Group</frontend_model>
+                <field id="germany_only" type="text" translate="label comment" sortOrder="5" showInDefault="0" showInWebsite="0" showInStore="0">
+                    <label>Germany only</label>
+                    <comment><![CDATA[Only available for german merchant. Please switch merchant country to Germany]]></comment>
+                    <frontend_model>Iways\PayPalPlus\Block\Config\System\Config\Form\Comment</frontend_model>
+                </field>
                 <group id="iways_paypalplus_api" translate="label" showInDefault="1" showInWebsite="1" sortOrder="10">
                     <comment><![CDATA[<a href="https://www.paypalobjects.com/webstatic/de_DE/downloads/PayPal_Nutzung_der_REST_API.pdf" target="_blank">How to retrieve your PayPal API credentials.</a>]]></comment>
                     <label>PayPalPlus Api Settings</label>

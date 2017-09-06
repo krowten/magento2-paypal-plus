@@ -11,11 +11,13 @@
  * Copyright i-ways sales solutions GmbH © 2015. All Rights Reserved.
  * License http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
+
 namespace Iways\PayPalPlus\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Quote\Model\Quote;
+use PayPal\Api\Refund;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Address;
@@ -207,7 +209,7 @@ class Api
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
 
         $this->_apiContext->setConfig(
-            array(
+            [
                 'http.ConnectionTimeOut' => 30,
                 'http.Retry' => 1,
                 'cache.enabled' => $this->scopeConfig->getValue(
@@ -220,7 +222,7 @@ class Api
                     \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
                 'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . '/PayPal.log',
                 'log.LogLevel' => 'INFO'
-            )
+            ]
         );
         $this->_apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', 'Magento_Cart_PayPalPlusMagento2');
         return $this;
@@ -251,7 +253,7 @@ class Api
      * Get a payment
      *
      * @param string $paymentId
-     * @return Payment
+     * @return \PayPal\Api\Payment
      */
     public function getPayment($paymentId)
     {
@@ -317,7 +319,7 @@ class Api
             $payment = PayPalPayment::get($this->customerSession->getPayPalPaymentId(), $this->_apiContext);
             $patchRequest = new PatchRequest();
 
-            if(!$quote->isVirtual()) {
+            if (!$quote->isVirtual()) {
                 $shippingAddress = $this->buildShippingAddress($quote);
                 $addressPatch = new Patch();
                 $addressPatch->setOp(self::PATCH_ADD);
@@ -354,8 +356,8 @@ class Api
      * Patches invoice number to PayPal transaction
      * (Magento order increment id)
      *
-     * @param $paymentId
-     * @param $invoiceNumber
+     * @param string $paymentId
+     * @param string $invoiceNumber
      * @return bool
      */
     public function patchInvoiceNumber($paymentId, $invoiceNumber)
@@ -381,7 +383,7 @@ class Api
      *
      * @param string $paymentId
      * @param string $payerId
-     * @return boolean
+     * @return boolean|\PayPal\Api\Payment
      */
     public function executePayment($paymentId, $payerId)
     {
@@ -403,9 +405,9 @@ class Api
     /**
      * Refund a payment
      *
-     * @param type $paymentId
-     * @param type $amount
-     * @return type
+     * @param string $paymentId
+     * @param string $amount
+     * @return Refund
      */
     public function refundPayment($paymentId, $amount)
     {
@@ -891,5 +893,4 @@ class Api
             return false;
         }
     }
-
 }

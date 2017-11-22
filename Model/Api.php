@@ -102,9 +102,9 @@ class Api
     protected $payPalPlusWebhookEventFactory;
 
     /**
-     * @var \Magento\Checkout\Model\Type\Onepage
+     * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutTypeOnepage;
+    protected $checkoutSession;
 
     /**
      * @var \Magento\Backend\Model\Session
@@ -147,7 +147,7 @@ class Api
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param Webhook\EventFactory $payPalPlusWebhookEventFactory
-     * @param \Magento\Checkout\Model\Type\Onepage $checkoutTypeOnepage
+     * @param \Magento\Checkout\Model\Session $session
      * @param \Magento\Backend\Model\Session $backendSession
      * @param DirectoryList $directoryList
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
@@ -163,7 +163,7 @@ class Api
         \Psr\Log\LoggerInterface $logger,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Iways\PayPalPlus\Model\Webhook\EventFactory $payPalPlusWebhookEventFactory,
-        \Magento\Checkout\Model\Type\Onepage $checkoutTypeOnepage,
+        \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Backend\Model\Session $backendSession,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Message\ManagerInterface $messageManager,
@@ -178,7 +178,7 @@ class Api
         $this->logger = $logger;
         $this->storeManager = $storeManager;
         $this->payPalPlusWebhookEventFactory = $payPalPlusWebhookEventFactory;
-        $this->checkoutTypeOnepage = $checkoutTypeOnepage;
+        $this->checkoutSession = $checkoutSession;
         $this->backendSession = $backendSession;
         $this->directoryList = $directoryList;
         $this->messageManager = $messageManager;
@@ -793,8 +793,7 @@ class Api
         $presentation->setLocaleCode(
             substr(
                 $this->scopeConfig->getValue('general/locale/code', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
-                3,
-                2
+                -2
             )
         );
         return $presentation;
@@ -866,7 +865,7 @@ class Api
      */
     protected function getQuote()
     {
-        return $this->checkoutTypeOnepage->getQuote();
+        return $this->checkoutSession->getQuote();
     }
 
     /**

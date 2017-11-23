@@ -741,10 +741,15 @@ class Api
             );
         }
 
+        $total = $quote->getBaseGrandTotal();
+        if((float)$quote->getShippingAddress()->getBaseShippingAmount() == 0 && (float)$quote->getShippingAddress()->getBaseShippingInclTax() >= 0) {
+            $total = (float)$total - (float)$quote->getShippingAddress()->getBaseShippingInclTax();
+        }
+
         $amount = new Amount();
         $amount->setCurrency($quote->getBaseCurrencyCode())
             ->setDetails($details)
-            ->setTotal($quote->getBaseGrandTotal());
+            ->setTotal($total);
 
         return $amount;
     }

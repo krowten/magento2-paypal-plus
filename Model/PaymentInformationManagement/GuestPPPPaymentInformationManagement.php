@@ -15,6 +15,7 @@
 namespace Iways\PayPalPlus\Model\PaymentInformationManagement;
 
 use Iways\PayPalPlus\Model\PaymentInformationManagement;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Api\CartRepositoryInterface;
 
 class GuestPPPPaymentInformationManagement extends PaymentInformationManagement implements \Iways\PayPalPlus\Api\GuestPPPPaymentInformationManagementInterface
@@ -100,7 +101,15 @@ class GuestPPPPaymentInformationManagement extends PaymentInformationManagement 
         }
         $paymentMethod = $this->handleComment($paymentMethod);
         $this->paymentMethodManagement->set($cartId, $paymentMethod);
-        $this->patchPayment($quoteIdMask->getQuoteId());
+
+        try {
+            $this->patchPayment($quoteIdMask->getQuoteId());
+        } catch (\Exception $e) {
+            throw new CouldNotSaveException(
+                __($e->getMessage()),
+                $e
+            );
+        }
         return true;
     }
 

@@ -78,7 +78,7 @@ define(
                 }
             ).fail(
                 function (response) {
-                    errorProcessor.process(response, messageContainer);
+                    errorProcessor.process(response);
                 }
             ).always(
                 function () {

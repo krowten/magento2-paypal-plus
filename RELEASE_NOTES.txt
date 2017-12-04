@@ -1,3 +1,6 @@
+==== 1.1.5 ====
+US address validation error handling.
+
 ==== 1.1.4 ====
 Changed locale_code parsing
 Added workaround for broken shipping cost calculation in checkout

@@ -56,6 +56,8 @@ class Api
     const PATCH_ADD = 'add';
     const PATCH_REPLACE = 'replace';
 
+    const VALIDATION_ERROR = 'VALIDATION_ERROR';
+
     /**
      * @var null|ApiContext
      */
@@ -128,7 +130,7 @@ class Api
     protected $encryptor;
 
     /**
-     * @var Repository
+     * @var \Magento\Framework\View\Asset\Repository
      */
     protected $assetRepo;
 
@@ -261,11 +263,11 @@ class Api
     }
 
     /**
-     * Create payment for curretn quote
+     * Create payment for current quote
      *
      * @param WebProfile $webProfile
      * @param \Magento\Quote\Model\Quote $quote
-     * @return boolean
+     * @return boolean|PayPalPayment
      */
     public function createPayment($webProfile, $quote, $taxFailure = false)
     {
@@ -300,7 +302,7 @@ class Api
             }
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
@@ -342,11 +344,37 @@ class Api
             $amountPatch->setValue($amount);
             $patchRequest->addPatch($amountPatch);
 
-            $response = $payment->update(
-                $patchRequest,
-                $this->_apiContext
-            );
-            return $response;
+
+            try {
+                $response = $payment->update(
+                    $patchRequest,
+                    $this->_apiContext
+                );
+                return $response;
+            } catch (\PayPal\Exception\PayPalConnectionException $ex) {
+                $message = json_decode($ex->getData());
+                if (
+                    isset($message->name)
+                    && isset($message->details)
+                    && $message->name == self::VALIDATION_ERROR
+                ) {
+                    $validationMessage = __('Your address is invalid. Please check following errors: ');
+                    foreach ($message->details as $detail) {
+                        if (isset($detail->field) && isset($detail->issue)) {
+                            $validationMessage .=
+                                __(
+                                    'Field: "%1" - %2. ',
+                                    [
+                                        $detail->field,
+                                        $detail->issue
+                                    ]
+                                );
+                        }
+                    }
+                    throw new \Exception($validationMessage);
+                }
+            }
+
         }
         return false;
     }
@@ -395,11 +423,10 @@ class Api
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
-        return false;
     }
 
     /**
@@ -436,11 +463,10 @@ class Api
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
-        return false;
     }
 
     /**
@@ -457,11 +483,10 @@ class Api
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
-        return false;
     }
 
     /**
@@ -477,7 +502,7 @@ class Api
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
@@ -513,7 +538,7 @@ class Api
             }
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
@@ -535,7 +560,7 @@ class Api
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             return false;
         }
@@ -553,7 +578,7 @@ class Api
         try {
             $webhookEvent = new \PayPal\Api\WebhookEvent();
             return $webhookEvent->validateAndGetReceivedEvent($rawBody, $this->_apiContext);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->logger->critical($ex);
             return false;
         }
@@ -593,7 +618,7 @@ class Api
      * Build BillingAddress from quote
      *
      * @param \Magento\Quote\Model\Quote $quote
-     * @return ShippingAddress
+     * @return ShippingAddress|boolean
      */
     protected function buildBillingAddress($quote)
     {
@@ -742,7 +767,7 @@ class Api
         }
 
         $total = $quote->getBaseGrandTotal();
-        if((float)$quote->getShippingAddress()->getBaseShippingAmount() == 0 && (float)$quote->getShippingAddress()->getBaseShippingInclTax() >= 0) {
+        if ((float)$quote->getShippingAddress()->getBaseShippingAmount() == 0 && (float)$quote->getShippingAddress()->getBaseShippingInclTax() >= 0) {
             $total = (float)$total - (float)$quote->getShippingAddress()->getBaseShippingInclTax();
         }
 
@@ -834,7 +859,7 @@ class Api
     /**
      * Reset web profile id
      *
-     * @return type
+     * @return boolean
      */
     public function resetWebProfileId()
     {

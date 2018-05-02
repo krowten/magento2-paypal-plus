@@ -1,3 +1,12 @@
+==== 1.1.7 ====
+Fixed minicart not empty after order success
+Fixed shipping calculation with free shipping
+Skip payment creation call if total is zero
+Removed unused file sections.xml
+
+==== 1.1.6 ====
+Hide PayPal Express in checkout if PPP is active
+
 ==== 1.1.5 ====
 US address validation error handling.
 

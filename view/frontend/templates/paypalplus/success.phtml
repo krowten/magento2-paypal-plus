@@ -82,3 +82,15 @@
 <?php elseif ($block->isPPP()): ?>
     <div class="ppp-success"><?php /* @noEscape */ echo __('<i>processed by PayPal</i>');?></div>
 <?php endif; ?>
+<?php if ($block->isPPP()): ?>
+    <script>
+        require([
+            'Magento_Customer/js/customer-data',
+            'jquery'
+        ], function (customerData, $) {
+            $(function(){
+                customerData.invalidate(['cart', 'customer', 'last-ordered-items']);
+            });
+        });
+    </script>
+<?php endif; ?>

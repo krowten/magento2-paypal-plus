@@ -110,6 +110,9 @@ define(
                         language: self.language,
                         preselection: "paypal",
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
+                        onLoad: function() {
+                            self.lastCall = 'enableContinue';
+                        },
                         onThirdPartyPaymentMethodSelected: function (data) {
                             self.lastCall = 'onThirdPartyPaymentMethodSelected';
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];

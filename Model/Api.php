@@ -271,6 +271,13 @@ class Api
      */
     public function createPayment($webProfile, $quote, $taxFailure = false)
     {
+        /**
+         * Skip if grand total is zero
+         */
+        if ($quote->getBaseGrandTotal() == "0.0000") {
+            return false;
+        }
+
         $payer = $this->buildPayer($quote);
 
         $itemList = $this->buildItemList($quote, $taxFailure);
@@ -746,7 +753,9 @@ class Api
     protected function buildAmount($quote)
     {
         $details = new Details();
-        $details->setShipping($quote->getShippingAddress()->getBaseShippingAmount())
+        $shippingCost = $quote->getShippingAddress()->getFreeShipping() ? 0 : $quote->getShippingAddress()->getBaseShippingAmount();
+
+        $details->setShipping($shippingCost)
             ->setTax(
                 $quote->getShippingAddress()->getBaseTaxAmount()
                 + $quote->getShippingAddress()->getBaseHiddenTaxAmount()

@@ -1,3 +1,6 @@
+==== 1.1.8 ====
+Fixed discount calculation on virtual quotes
+
 ==== 1.1.7 ====
 Fixed minicart not empty after order success
 Fixed shipping calculation with free shipping

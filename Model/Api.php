@@ -766,21 +766,21 @@ class Api
                 $quote->getBaseSubtotal()
             );
 
-        if ($quote->getShippingAddress()->getDiscountAmount()) {
-            $details->setShippingDiscount(
-                -(
-                    $quote->getShippingAddress()->getDiscountAmount()
-                    + $quote->getShippingAddress()->getBaseDiscountTaxCompensationAmount()
-                )
-            );
-        }
-
         if ($quote->isVirtual()) {
             if($quote->getBillingAddress()->getDiscountAmount()) {
                 $details->setShippingDiscount(
                     -(
                         $quote->getBillingAddress()->getDiscountAmount()
                         + $quote->getBillingAddress()->getBaseDiscountTaxCompensationAmount()
+                    )
+                );
+            }
+        } else {
+            if ($quote->getShippingAddress()->getDiscountAmount()) {
+                $details->setShippingDiscount(
+                    -(
+                        $quote->getShippingAddress()->getDiscountAmount()
+                        + $quote->getShippingAddress()->getBaseDiscountTaxCompensationAmount()
                     )
                 );
             }

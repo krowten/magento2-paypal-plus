@@ -78,5 +78,7 @@ class Index extends \Magento\Framework\App\Action\Action
             $this->_logger->critical($e);
             $this->getResponse()->setStatusHeader(503, '1.1', 'Service Unavailable')->sendResponse();
         }
+
+        return;
     }
 }

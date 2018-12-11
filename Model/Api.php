@@ -113,7 +113,6 @@ class Api
      */
     protected $backendSession;
 
-
     /**
      * @var \Magento\Framework\App\Filesystem\DirectoryList
      */
@@ -191,10 +190,9 @@ class Api
     }
 
     /**
-     * Set api context
-     *
-     * @param $website
+     * @param null $website
      * @return $this
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function setApiContext($website = null)
     {
@@ -289,15 +287,10 @@ class Api
         $transaction->setItemList($itemList);
 
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))
-            ->setCancelUrl($this->urlBuilder->getUrl('paypalplus/checkout/cancel'));
+        $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))->setCancelUrl($this->urlBuilder->getUrl('paypalplus/checkout/cancel'));
 
         $payment = new PayPalPayment();
-        $payment->setIntent("sale")
-            ->setExperienceProfileId($webProfile->getId())
-            ->setPayer($payer)
-            ->setRedirectUrls($redirectUrls)
-            ->setTransactions(array($transaction));
+        $payment->setIntent("sale")->setExperienceProfileId($webProfile->getId())->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
 
         try {
             $response = $payment->create($this->_apiContext);
@@ -317,10 +310,9 @@ class Api
     }
 
     /**
-     * Adding shipping address to an existing payment.
-     *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return boolean
+     * @param $quote
+     * @return bool
+     * @throws \Exception
      */
     public function patchPayment($quote)
     {
@@ -525,7 +517,7 @@ class Api
     {
         $webhook = new \PayPal\Api\Webhook();
         $webhook->setUrl($this->payPalPlusHelper->getWebhooksUrl());
-        $webhookEventTypes = array();
+        $webhookEventTypes = [];
         foreach ($this->payPalPlusWebhookEventFactory->create()->getSupportedWebhookEvents() as $webhookEvent) {
             $webhookEventType = new \PayPal\Api\WebhookEventType();
             $webhookEventType->setName($webhookEvent);
@@ -767,7 +759,7 @@ class Api
             );
 
         if ($quote->isVirtual()) {
-            if($quote->getBillingAddress()->getDiscountAmount()) {
+            if ($quote->getBillingAddress()->getDiscountAmount()) {
                 $details->setShippingDiscount(
                     -(
                         $quote->getBillingAddress()->getDiscountAmount()

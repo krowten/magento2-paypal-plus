@@ -15,15 +15,11 @@
 namespace Iways\PayPalPlus\Helper;
 
 use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\View\LayoutFactory;
 
 /**
- * Iways PayPalPlus Helper
- *
- * @category   Iways
- * @package    Iways_PayPalPlus
- * @author robert
+ * Class Data
+ * @package Iways\PayPalPlus\Helper
  */
 class Data extends \Magento\Payment\Helper\Data
 {
@@ -62,6 +58,28 @@ class Data extends \Magento\Payment\Helper\Data
      */
     protected $cacheTypeList;
 
+    /**
+     * @var \Magento\Framework\App\ProductMetadata
+     */
+    protected $productMetaData;
+
+    /**
+     * Data constructor.
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param LayoutFactory $layoutFactory
+     * @param \Magento\Payment\Model\Method\Factory $paymentMethodFactory
+     * @param \Magento\Store\Model\App\Emulation $appEmulation
+     * @param \Magento\Payment\Model\Config $paymentConfig
+     * @param \Magento\Framework\App\Config\Initial $initialConfig
+     * @param \Magento\Framework\Session\Generic $generic
+     * @param \Magento\Framework\App\Request\Http $request
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Magento\Config\Model\ResourceModel\Config $configResource
+     * @param \Magento\Framework\App\ProductMetadata $productMetaData
+     * @param TypeListInterface $cacheTypeList
+     */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         LayoutFactory $layoutFactory,
@@ -75,6 +93,7 @@ class Data extends \Magento\Payment\Helper\Data
         \Iways\PayPalPlus\Model\ApiFactory $payPalPlusApiFactory,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Config\Model\ResourceModel\Config $configResource,
+        \Magento\Framework\App\ProductMetadata $productMetaData,
         TypeListInterface $cacheTypeList
     ) {
         parent::__construct($context, $layoutFactory, $paymentMethodFactory, $appEmulation, $paymentConfig, $initialConfig);
@@ -85,7 +104,9 @@ class Data extends \Magento\Payment\Helper\Data
         $this->messageManager = $messageManager;
         $this->configResource = $configResource;
         $this->cacheTypeList = $cacheTypeList;
+        $this->productMetaData = $productMetaData;
     }
+
     /**
      * Show Exception if debug mode.
      *
@@ -105,19 +126,32 @@ class Data extends \Magento\Payment\Helper\Data
      */
     public function getWebhooksUrl()
     {
+        $version = $this->productMetaData->getVersion();
+        if (version_compare($version, '2.3.0', '>=')) {
+            return str_replace(
+                'http://',
+                'https://',
+                $this->_getUrl(
+                    'paypalplus/webhooks/twothree/',
+                    [
+                        '_forced_secure' => true,
+                        '_nosid' => true,
+                    ]
+                )
+            );
+        }
         return str_replace(
             'http://',
             'https://',
             $this->_getUrl(
                 'paypalplus/webhooks/index/',
-                array(
+                [
                     '_forced_secure' => true,
                     '_nosid' => true,
-                )
+                ]
             )
         );
     }
-
 
     /**
      * Get url wrapper for security urls and form key
@@ -152,16 +186,16 @@ class Data extends \Magento\Payment\Helper\Data
     }
 
     /**
-     * Helper for saving store configuration programmatically
-     *
+     * Save Store Config
      * @param $key
      * @param $value
-     * @param $storeId
-     * @return boolean
+     * @param null $storeId
+     * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function saveStoreConfig($key, $value, $storeId = null)
     {
-        if(!$storeId) {
+        if (!$storeId) {
             $storeId = $this->storeManager->getStore()->getId();
         }
         $this->configResource->saveConfig(
@@ -173,12 +207,14 @@ class Data extends \Magento\Payment\Helper\Data
         $this->cacheTypeList->cleanType('config');
         return true;
     }
+
     /**
      * Reset web profile id
      *
      * @return boolean
      */
-    public function resetWebProfileId() {
+    public function resetWebProfileId()
+    {
         foreach ($this->storeManager->getStores() as $store) {
             $this->configResource->saveConfig(
                 'iways_paypalplus/dev/web_profile_id',

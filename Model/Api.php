@@ -336,6 +336,13 @@ class Api
             $payerInfoPatch->setValue($payerInfo);
             $patchRequest->addPatch($payerInfoPatch);
 
+            $itemList = $this->buildItemList($quote);
+            $itemListPatch = new Patch();
+            $itemListPatch->setOp('replace');
+            $itemListPatch->setPath('/transactions/0/item_list');
+            $itemListPatch->setValue($itemList);
+            $patchRequest->addPatch($itemListPatch);
+
             $amount = $this->buildAmount($quote);
             $amountPatch = new Patch();
             $amountPatch->setOp('replace');
@@ -343,12 +350,8 @@ class Api
             $amountPatch->setValue($amount);
             $patchRequest->addPatch($amountPatch);
 
-
             try {
-                $response = $payment->update(
-                    $patchRequest,
-                    $this->_apiContext
-                );
+                $response = $payment->update($patchRequest, $this->_apiContext);
                 return $response;
             } catch (\PayPal\Exception\PayPalConnectionException $ex) {
                 $message = json_decode($ex->getData());
@@ -703,14 +706,15 @@ class Api
     }
 
     /**
-     * Build ItemList
+     * Build Item List
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param $quote
+     * @param bool $taxFailure
      * @return ItemList
      */
-    protected function buildItemList($quote, $taxFailure)
+    protected function buildItemList($quote, $taxFailure = false)
     {
-        $itemArray = array();
+        $itemArray = [];
         $itemList = new ItemList();
         $currencyCode = $quote->getBaseCurrencyCode();
 

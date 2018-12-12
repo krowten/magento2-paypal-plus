@@ -5,9 +5,9 @@
     { "type": "composer", "url": "https://packagist.org" }
   ],
   "require": {
-    "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0",
+    "php": "~7.0.0|~7.1.0|~7.2.0",
     "paypal/rest-api-sdk-php": "^1.6",
-    "magento/module-paypal": "100.0.*|100.1.*|100.2.*"
+    "magento/module-paypal": "100.0.*|100.1.*|100.2.*|100.3.*"
   },
   "authors": [
     {
@@ -18,7 +18,7 @@
     }
   ],
   "type": "magento2-module",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "license": [
     "OSL-3.0"
   ],

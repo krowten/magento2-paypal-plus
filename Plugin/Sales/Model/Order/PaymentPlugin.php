@@ -26,7 +26,8 @@ class PaymentPlugin
     protected $orderPaymentExtensionFactory;
 
     /**
-     * @param OrderPaymentExtensionInterface $orderPaymentExtensionFactory
+     * PaymentPlugin constructor.
+     * @param OrderPaymentExtensionFactory $orderPaymentExtensionFactory
      */
     public function __construct(
         OrderPaymentExtensionFactory $orderPaymentExtensionFactory

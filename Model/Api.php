@@ -198,15 +198,12 @@ class Api
     {
         $this->_apiContext = new ApiContext(
             new OAuthTokenCredential(
-                $this->scopeConfig->getValue('iways_paypalplus/api/client_id',
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
-                $this->scopeConfig->getValue('iways_paypalplus/api/client_secret',
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website)
+                $this->scopeConfig->getValue('iways_paypalplus/api/client_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
+                $this->scopeConfig->getValue('iways_paypalplus/api/client_secret', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website)
             )
         );
 
-        $this->_mode = $this->scopeConfig->getValue('iways_paypalplus/api/mode',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
+        $this->_mode = $this->scopeConfig->getValue('iways_paypalplus/api/mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
 
         $this->_apiContext->setConfig(
             [
@@ -218,8 +215,7 @@ class Api
                     $website
                 ),
                 'mode' => $this->_mode,
-                'log.LogEnabled' => $this->scopeConfig->getValue('iways_paypalplus/dev/debug',
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
+                'log.LogEnabled' => $this->scopeConfig->getValue('iways_paypalplus/dev/debug', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
                 'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . '/PayPal.log',
                 'log.LogLevel' => 'INFO'
             ]
@@ -230,8 +226,8 @@ class Api
 
     /**
      * Get ApprovalLink for curretn Quote
-     *
-     * @return string
+     * @return bool|mixed|string|null
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getPaymentExperience()
     {
@@ -376,11 +372,9 @@ class Api
                     throw new \Exception($validationMessage);
                 }
             }
-
         }
         return false;
     }
-
 
     /**
      * Patches invoice number to PayPal transaction
@@ -402,8 +396,7 @@ class Api
         $invoiceNumberPatch->setValue($invoiceNumber);
         $patchRequest->addPatch($invoiceNumberPatch);
 
-        $response = $payment->update($patchRequest,
-            $this->_apiContext);
+        $response = $payment->update($patchRequest, $this->_apiContext);
 
         return $response;
     }
@@ -432,11 +425,11 @@ class Api
     }
 
     /**
-     * Refund a payment
-     *
-     * @param string $paymentId
-     * @param string $amount
+     * Refund Payment
+     * @param $paymentId
+     * @param $amount
      * @return Refund
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function refundPayment($paymentId, $amount)
     {
@@ -585,7 +578,6 @@ class Api
             return false;
         }
     }
-
 
     /**
      * Build ShippingAddress from quote
@@ -795,20 +787,17 @@ class Api
         return $amount;
     }
 
-
     /**
-     * Build WebProfile
-     *
-     * @return boolean|WebProfile
+     * Build WebProfil
+     * @return bool|\PayPal\Api\CreateProfileResponse|WebProfile
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function buildWebProfile()
     {
         $webProfile = new WebProfile();
-        if ($this->scopeConfig->getValue('iways_paypalplus/dev/web_profile_id',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+        if ($this->scopeConfig->getValue('iways_paypalplus/dev/web_profile_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
         ) {
-            $webProfile->setId($this->scopeConfig->getValue('iways_paypalplus/dev/web_profile_id',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+            $webProfile->setId($this->scopeConfig->getValue('iways_paypalplus/dev/web_profile_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
             return $webProfile;
         }
         try {
@@ -827,9 +816,9 @@ class Api
     }
 
     /**
-     * Build presentation
-     *
+     * Build Web Profile Presentation
      * @return Presentation
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function buildWebProfilePresentation()
     {
@@ -852,11 +841,9 @@ class Api
      */
     protected function getHeaderImage()
     {
-        if ($this->scopeConfig->getValue('iways_paypalplus/api/hdrimg',
-            \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE)
+        if ($this->scopeConfig->getValue('iways_paypalplus/api/hdrimg', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE)
         ) {
-            return $this->scopeConfig->getValue('iways_paypalplus/api/hdrimg',
-                \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
+            return $this->scopeConfig->getValue('iways_paypalplus/api/hdrimg', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
         }
         $folderName = \Magento\Config\Model\Config\Backend\Image\Logo::UPLOAD_DIR;
         $storeLogoPath = $this->scopeConfig->getValue(
@@ -865,11 +852,9 @@ class Api
         );
         if ($storeLogoPath) {
             $path = $folderName . '/' . $storeLogoPath;
-            return $this->urlBuilder
-                    ->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
+            return $this->urlBuilder->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]) . $path;
         }
         return $this->assetRepo->getUrlWithParams('images/logo.svg', ['_secure' => true]);
-
     }
 
     /**
@@ -884,9 +869,9 @@ class Api
 
     /**
      * Save WebProfileId
-     *
-     * @param string $id
-     * @return boolean
+     * @param $id
+     * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     protected function saveWebProfileId($id)
     {
@@ -895,9 +880,9 @@ class Api
 
     /**
      * Save WebhookId
-     *
-     * @param string $id
-     * @return boolean
+     * @param $id
+     * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     protected function saveWebhookId($id)
     {
@@ -916,11 +901,10 @@ class Api
 
     /**
      * Check if PayPal credentails are valid for given configuration.
-     *
      * Uses WebProfile::get_list()
-     *
      * @param $website
      * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function testCredentials($website)
     {

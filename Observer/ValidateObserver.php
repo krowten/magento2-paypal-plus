@@ -87,11 +87,9 @@ class ValidateObserver implements ObserverInterface
 
     /**
      * Log out user and redirect to new admin custom url
-     *
      * @param \Magento\Framework\Event\Observer $observer
-     * @return void
-     * @SuppressWarnings(PHPMD.ExitExpression)
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
@@ -108,10 +106,8 @@ class ValidateObserver implements ObserverInterface
 
     /**
      * Try to get default store id from observer
-     *
      * @param \Magento\Framework\Event\Observer $observer
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return object|null
      */
     protected function getDefaultStoreId(\Magento\Framework\Event\Observer $observer)
     {

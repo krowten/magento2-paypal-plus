@@ -38,9 +38,9 @@ class PaymentInfo extends \Magento\Payment\Block\Info
 
     /**
      * Prepare information specific to current payment method
-     *
-     * @param \Magento\Framework\DataObject|array $transport
+     * @param null $transport
      * @return \Magento\Framework\DataObject
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _prepareSpecificInformation($transport = null)
     {
@@ -65,8 +65,8 @@ class PaymentInfo extends \Magento\Payment\Block\Info
 
     /**
      * Checks if PayPal Plus payment is PUI
-     *
      * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function isPUI()
     {

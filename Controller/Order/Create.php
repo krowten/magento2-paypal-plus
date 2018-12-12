@@ -16,7 +16,6 @@ namespace Iways\PayPalPlus\Controller\Order;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\DataObject;
-use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\OrderFactory;
@@ -30,7 +29,6 @@ use Magento\Sales\Model\OrderFactory;
  */
 class Create extends \Magento\Framework\App\Action\Action
 {
-
     const MAX_SEND_MAIL_VERSION = '2.2.6';
     /**
      * @var \Psr\Log\LoggerInterface
@@ -108,7 +106,6 @@ class Create extends \Magento\Framework\App\Action\Action
         $this->historyFactory = $historyFactory;
         $this->productMetadata = $productMetadata;
         parent::__construct($context);
-
     }
 
     /**
@@ -131,8 +128,7 @@ class Create extends \Magento\Framework\App\Action\Action
                 $order = $this->orderFactory->create()->load($orderId);
                 if (
                     $order->getCanSendNewEmailFlag()
-                    && version_compare($this->productMetadata->getVersion(),
-                        self::MAX_SEND_MAIL_VERSION, '<')
+                    && version_compare($this->productMetadata->getVersion(), self::MAX_SEND_MAIL_VERSION, '<')
                 ) {
                     try {
                         $this->orderSender->send($order);
@@ -160,7 +156,6 @@ class Create extends \Magento\Framework\App\Action\Action
                         }
                     }
                 } catch (\Exception $e) {
-
                 }
             }
             $result->setData('success', true);

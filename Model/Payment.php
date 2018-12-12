@@ -130,11 +130,9 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->customerSession = $customerSession;
         $this->payPalPlusHelper = $payPalPlusHelper;
         $this->salesOrderPaymentTransactionFactory = $salesOrderPaymentTransactionFactory;
-        parent::__construct($context, $registry, $extensionFactory, $customAttributeFactory, $paymentData, $scopeConfig,
-            $logger, $resource, $resourceCollection, $data);
+        parent::__construct($context, $registry, $extensionFactory, $customAttributeFactory, $paymentData, $scopeConfig, $logger, $resource, $resourceCollection, $data);
         $this->ppLogger = $context->getLogger();
     }
-
 
     /**
      * Authorize payment method
@@ -152,8 +150,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $paymentId = $this->request->getParam('paymentId');
         $payerId = $this->request->getParam('PayerID');
         try {
-            if ($this->scopeConfig->getValue('payment/iways_paypalplus_payment/transfer_reserved_order_id',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            if ($this->scopeConfig->getValue('payment/iways_paypalplus_payment/transfer_reserved_order_id', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ) {
                 $this->payPalPlusApiFactory->create()->patchInvoiceNumber(
                     $paymentId,
@@ -218,7 +215,6 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
                     }
                 }
             }
-
         } catch (\Exception $e) {
             $transactionId = $ppPayment->getId();
         }
@@ -241,11 +237,10 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
 
     /**
      * Refund specified amount for payment
-     *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @param float $amount
-     *
-     * @return \Iways\PayPalPlus\Model\Payment
+     * @return $this|\Magento\Payment\Model\Method\AbstractMethod
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {

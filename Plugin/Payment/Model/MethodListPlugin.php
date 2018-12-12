@@ -8,7 +8,6 @@
 
 namespace Iways\PayPalPlus\Plugin\Payment\Model;
 
-
 use Iways\PayPalPlus\Model\Payment;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Payment\Model\MethodList;

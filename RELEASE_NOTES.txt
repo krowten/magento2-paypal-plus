@@ -1,3 +1,8 @@
+==== 1.2.0 ====
+Compatibility with 2.2.6 and 2.3
+Renamed third party modules config
+Added item list to patch
+
 ==== 1.1.8 ====
 Fixed discount calculation on virtual quotes
 

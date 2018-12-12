@@ -47,7 +47,7 @@ class ThirdPartyModuls implements \Magento\Framework\Option\ArrayInterface
     {
         $payments = $this->_paymentConfig->getActiveMethods();
 
-        $methods = array(array('value' => '', 'label' => __('--Please Select--')));
+        $methods = [['value' => '', 'label' => __('--Please Select--')]];
 
         foreach ($payments as $paymentCode => $paymentModel) {
             if (strpos($paymentCode, 'paypal') !== false) {
@@ -58,10 +58,10 @@ class ThirdPartyModuls implements \Magento\Framework\Option\ArrayInterface
             if (empty($paymentTitle)) {
                 $paymentTitle = $paymentCode;
             }
-            $methods[$paymentCode] = array(
+            $methods[$paymentCode] = [
                 'label' => $paymentTitle,
                 'value' => $paymentCode,
-            );
+            ];
         }
         return $methods;
     }
@@ -75,7 +75,7 @@ class ThirdPartyModuls implements \Magento\Framework\Option\ArrayInterface
     {
         $payments = $this->_paymentConfig->getAllMethods();
 
-        $methods = array();
+        $methods = [];
 
         foreach ($payments as $paymentCode => $paymentModel) {
             if ($paymentCode == 'iways_paypalplus_payment') {

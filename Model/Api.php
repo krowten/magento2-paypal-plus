@@ -596,15 +596,15 @@ class Api
     protected function buildShippingAddress($quote)
     {
         $address = $quote->getShippingAddress();
-        $addressCheckerArray = array(
+        $addressCheckerArray = [
             'setRecipientName' => $this->buildFullName($address),
             'setLine1' => implode(' ', $address->getStreet()),
             'setCity' => $address->getCity(),
             'setCountryCode' => $address->getCountryId(),
             'setPostalCode' => $address->getPostcode(),
             'setState' => $address->getRegion(),
-        );
-        $allowedEmpty = array('setPhone', 'setState');
+        ];
+        $allowedEmpty = ['setPhone', 'setState'];
         $shippingAddress = new ShippingAddress();
         foreach ($addressCheckerArray as $setter => $value) {
             if (empty($value) && !in_array($setter, $allowedEmpty)) {
@@ -625,14 +625,14 @@ class Api
     protected function buildBillingAddress($quote)
     {
         $address = $quote->getBillingAddress();
-        $addressCheckerArray = array(
+        $addressCheckerArray = [
             'setLine1' => implode(' ', $address->getStreet()),
             'setCity' => $address->getCity(),
             'setCountryCode' => $address->getCountryId(),
             'setPostalCode' => $address->getPostcode(),
             'setState' => $address->getRegion(),
-        );
-        $allowedEmpty = array('setPhone', 'setState');
+        ];
+        $allowedEmpty = ['setPhone', 'setState'];
         $billingAddress = new Address();
         foreach ($addressCheckerArray as $setter => $value) {
             if (empty($value) && !in_array($setter, $allowedEmpty)) {
@@ -692,7 +692,7 @@ class Api
      */
     protected function buildFullName($address)
     {
-        $name = array();
+        $name = [];
         if ($address->getFirstname()) {
             $name[] = $address->getFirstname();
         }

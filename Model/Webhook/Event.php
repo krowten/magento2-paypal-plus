@@ -90,13 +90,13 @@ class Event
      */
     public function getSupportedWebhookEvents()
     {
-        return array(
+        return [
             self::PAYMENT_SALE_COMPLETED,
             self::PAYMENT_SALE_PENDING,
             self::PAYMENT_SALE_REFUNDED,
             self::PAYMENT_SALE_REVERSED,
             self::RISK_DISPUTE_CREATED
-        );
+        ];
     }
 
     /**

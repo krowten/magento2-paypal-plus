@@ -1,4 +1,5 @@
 ==== 1.2.1 ====
+Changed PaymentMethodTitle translation
 Removed processed by PayPal
 
 ==== 1.2.0 ====

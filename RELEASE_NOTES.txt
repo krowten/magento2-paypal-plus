@@ -1,3 +1,6 @@
+==== 1.2.1 ====
+Removed processed by PayPal
+
 ==== 1.2.0 ====
 Compatibility with 2.2.6 and 2.3
 Renamed third party modules config

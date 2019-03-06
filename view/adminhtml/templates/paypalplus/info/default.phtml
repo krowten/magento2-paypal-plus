@@ -19,7 +19,7 @@
  */
 $specificInfo = $block->getSpecificInformation();
 ?>
-<?php echo $block->escapeHtml($block->getMethod()->getTitle()); ?>
+<?php echo $block->escapeHtml(__($block->getMethod()->getTitle())); ?>
 <?php if($block->isPUI()): ?>
     <p><?php echo $this->escapeHtml(__('Pay upon Invoice')); ?></p>
 <?php endif; ?>

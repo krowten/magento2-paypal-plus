@@ -1,3 +1,6 @@
+==== 1.2.2 ====
+Renamed PayPal Plus to PayPal PLUS
+
 ==== 1.2.1 ====
 Changed PaymentMethodTitle translation
 Removed processed by PayPal

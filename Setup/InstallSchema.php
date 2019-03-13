@@ -45,7 +45,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Reference Number'
+                'comment' => 'PayPal PLUS Reference Number'
             ]
         );
         $connection->addColumn(
@@ -56,7 +56,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Instruction Type'
+                'comment' => 'PayPal PLUS Instruction Type'
             ]
         );
         $connection->addColumn(
@@ -67,7 +67,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Payment Due Date'
+                'comment' => 'PayPal PLUS Payment Due Date'
             ]
         );
         $connection->addColumn(
@@ -78,7 +78,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Note'
+                'comment' => 'PayPal PLUS Note'
             ]
         );
         $connection->addColumn(
@@ -89,7 +89,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Bank Name'
+                'comment' => 'PayPal PLUS Bank Name'
             ]
         );
         $connection->addColumn(
@@ -100,7 +100,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Holder Name'
+                'comment' => 'PayPal PLUS Holder Name'
             ]
         );
         $connection->addColumn(
@@ -111,7 +111,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus International Bank Account Number'
+                'comment' => 'PayPal PLUS International Bank Account Number'
             ]
         );
         $connection->addColumn(
@@ -122,7 +122,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Bank Identifier Code'
+                'comment' => 'PayPal PLUS Bank Identifier Code'
             ]
         );
         $connection->addColumn(
@@ -133,7 +133,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Routing Number'
+                'comment' => 'PayPal PLUS Routing Number'
             ]
         );
         $connection->addColumn(
@@ -144,7 +144,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Amount'
+                'comment' => 'PayPal PLUS Amount'
             ]
         );
         $connection->addColumn(
@@ -155,7 +155,7 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Currency'
+                'comment' => 'PayPal PLUS Currency'
             ]
         );
 

@@ -64,7 +64,7 @@ class PaymentInfo extends \Magento\Payment\Block\Info
     }
 
     /**
-     * Checks if PayPal Plus payment is PUI
+     * Checks if PayPal PLUS payment is PUI
      * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */

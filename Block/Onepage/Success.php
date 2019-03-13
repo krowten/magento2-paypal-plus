@@ -68,7 +68,7 @@ class Success extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Checks if order is PayPal Plus and PuI
+     * Checks if order is PayPal PLUS and PuI
      *
      * @return bool
      */
@@ -84,7 +84,7 @@ class Success extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Checks if order is PayPal Plus and has payment instructions
+     * Checks if order is PayPal PLUS and has payment instructions
      *
      * @return bool
      */

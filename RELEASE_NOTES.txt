@@ -1,3 +1,6 @@
+==== 1.2.3 ====
+Renamed PayPal-Plus to PayPal PLUS
+
 ==== 1.2.2 ====
 Renamed PayPal Plus to PayPal PLUS
 

@@ -46,4 +46,5 @@
 "Cache access token","Zugriffstoken zwischenspeichern"
 "Reduces API calls","Reduziert die API-Aufrufe"
 "Only available for merchants located in Germany. Please switch your merchant country to Germany. (Merchant Location -> Merchant Country -> Germany)","Nur verfügbar für Händler mit Standort in Deutschland. Bitte stellen Sie den Händlerstandort auf Deutschland. Händlerstandort -> Händlerland -> Deutschland"
-"Add payment methods to PayPal-Plus frame","Zahlungsmethoden dem PayPal-Plus Frame hinzufügen"
+"Add payment methods to PayPal-Plus frame","Zahlungsmethoden dem PayPal PLUS Frame hinzufügen"
+"Add payment methods to PayPal PLUS frame","Zahlungsmethoden dem PayPal PLUS Frame hinzufügen"

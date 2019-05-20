@@ -16,7 +16,6 @@ namespace Iways\PayPalPlus\Controller\Order;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\DataObject;
-use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\OrderFactory;
@@ -30,7 +29,7 @@ use Magento\Sales\Model\OrderFactory;
  */
 class Create extends \Magento\Framework\App\Action\Action
 {
-
+    const MAX_SEND_MAIL_VERSION = '2.2.6';
     /**
      * @var \Psr\Log\LoggerInterface
      */
@@ -76,6 +75,11 @@ class Create extends \Magento\Framework\App\Action\Action
      */
     protected $historyFactory;
 
+    /**
+     * @var \Magento\Framework\App\ProductMetadataInterface
+     */
+    protected $productMetadata;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Psr\Log\LoggerInterface $logger,
@@ -87,7 +91,8 @@ class Create extends \Magento\Framework\App\Action\Action
         OrderSender $orderSender,
         OrderFactory $orderFactory,
         \Magento\Sales\Model\Order\Status\HistoryFactory $historyFactory,
-        Session $customerSession
+        Session $customerSession,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata
     ) {
         $this->logger = $logger;
         $this->checkoutSession = $checkoutSession;
@@ -99,8 +104,8 @@ class Create extends \Magento\Framework\App\Action\Action
         $this->orderSender = $orderSender;
         $this->orderFactory = $orderFactory;
         $this->historyFactory = $historyFactory;
+        $this->productMetadata = $productMetadata;
         parent::__construct($context);
-
     }
 
     /**
@@ -121,7 +126,10 @@ class Create extends \Magento\Framework\App\Action\Action
 
             if ($orderId) {
                 $order = $this->orderFactory->create()->load($orderId);
-                if ($order->getCanSendNewEmailFlag()) {
+                if (
+                    $order->getCanSendNewEmailFlag()
+                    && version_compare($this->productMetadata->getVersion(), self::MAX_SEND_MAIL_VERSION, '<')
+                ) {
                     try {
                         $this->orderSender->send($order);
                     } catch (\Exception $e) {
@@ -148,7 +156,6 @@ class Create extends \Magento\Framework\App\Action\Action
                         }
                     }
                 } catch (\Exception $e) {
-
                 }
             }
             $result->setData('success', true);

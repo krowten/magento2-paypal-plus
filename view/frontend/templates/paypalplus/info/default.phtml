@@ -19,7 +19,7 @@
  * @see \Magento\Payment\Block\Info
  */
 $specificInfo = $block->getSpecificInformation();
-$title = $block->escapeHtml($block->getMethod()->getTitle());
+$title = $block->escapeHtml(__($block->getMethod()->getTitle()));
 ?>
 <dl class="payment-method">
     <dt class="title"><?php /* @noEscape */ echo $title; ?></dt>

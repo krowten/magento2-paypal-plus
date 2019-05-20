@@ -38,10 +38,10 @@ class Mode implements \Magento\Framework\Option\ArrayInterface
      */
     public function toOptionArray()
     {
-        return array(
-            array('value' => self::LIVE, 'label' => __('Live')),
-            array('value' => self::SANDBOX, 'label' => __('Sandbox')),
-        );
+        return [
+            ['value' => self::LIVE, 'label' => __('Live')],
+            ['value' => self::SANDBOX, 'label' => __('Sandbox')],
+        ];
     }
 
     /**
@@ -51,9 +51,9 @@ class Mode implements \Magento\Framework\Option\ArrayInterface
      */
     public function toArray()
     {
-        return array(
+        return [
             self::SANDBOX => __('Sandbox'),
             self::LIVE => __('Live'),
-        );
+        ];
     }
 }

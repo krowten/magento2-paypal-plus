@@ -22,7 +22,6 @@ namespace Iways\PayPalPlus\Model\Webhook;
  */
 class Event
 {
-
     /**
      * Payment sale completed event type code
      */
@@ -68,15 +67,15 @@ class Event
         $this->salesOrderPaymentTransactionFactory = $salesOrderPaymentTransactionFactory;
         $this->salesOrderFactory = $salesOrderFactory;
     }
+
     /**
      * Process the given $webhookEvent
-     *
      * @param \PayPal\Api\WebhookEvent $webhookEvent
+     * @throws \Exception
      */
     public function processWebhookRequest(\PayPal\Api\WebhookEvent $webhookEvent)
     {
-        if ($webhookEvent->getEventType() !== null && in_array($webhookEvent->getEventType(),
-                $this->getSupportedWebhookEvents())
+        if ($webhookEvent->getEventType() !== null && in_array($webhookEvent->getEventType(), $this->getSupportedWebhookEvents())
         ) {
             $this->getOrder($webhookEvent);
             $this->{$this->eventTypeToHandler($webhookEvent->getEventType())}($webhookEvent);
@@ -90,13 +89,13 @@ class Event
      */
     public function getSupportedWebhookEvents()
     {
-        return array(
+        return [
             self::PAYMENT_SALE_COMPLETED,
             self::PAYMENT_SALE_PENDING,
             self::PAYMENT_SALE_REFUNDED,
             self::PAYMENT_SALE_REVERSED,
             self::RISK_DISPUTE_CREATED
-        );
+        ];
     }
 
     /**
@@ -120,8 +119,8 @@ class Event
 
     /**
      * Mark transaction as completed
-     *
      * @param \PayPal\Api\WebhookEvent $webhookEvent
+     * @throws \Exception
      */
     protected function paymentSaleCompleted(\PayPal\Api\WebhookEvent $webhookEvent)
     {
@@ -148,10 +147,8 @@ class Event
                         'Notified customer about invoice #%1.',
                         $invoice->getIncrementId()
                     )
-                )->setIsCustomerNotified(true)
-                ->save();
+                )->setIsCustomerNotified(true)->save();
         }
-
     }
 
     /**
@@ -162,7 +159,6 @@ class Event
      */
     protected function paymentSaleRefunded(\PayPal\Api\WebhookEvent $webhookEvent)
     {
-
         $paymentResource = $webhookEvent->getResource();
         $parentTransactionId = $paymentResource->parent_payment;
         /** @var \Magento\Sales\Model\Order\Payment $payment */
@@ -195,8 +191,8 @@ class Event
 
     /**
      * Mark transaction as pending
-     *
      * @param \PayPal\Api\WebhookEvent $webhookEvent
+     * @throws \Exception
      */
     protected function paymentSalePending(\PayPal\Api\WebhookEvent $webhookEvent)
     {
@@ -211,8 +207,8 @@ class Event
 
     /**
      * Mark transaction as reversed
-     *
      * @param \PayPal\Api\WebhookEvent $webhookEvent
+     * @throws \Exception
      */
     protected function paymentSaleReversed(\PayPal\Api\WebhookEvent $webhookEvent)
     {
@@ -234,12 +230,8 @@ class Event
     protected function riskDisputeCreated(\PayPal\Api\WebhookEvent $webhookEvent)
     {
         //Add IPN comment about registered dispute
-        $this->_order->addStatusHistoryComment($webhookEvent->getSummary())
-            ->setIsCustomerNotified(false)
-            ->save();
-
+        $this->_order->addStatusHistoryComment($webhookEvent->getSummary())->setIsCustomerNotified(false)->save();
     }
-
 
     /**
      * Load and validate order, instantiate proper configuration

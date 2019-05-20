@@ -18,7 +18,7 @@
  * @var \Magento\Payment\Block\Info $block
  */
 ?>
-<?php echo $block->escapeHtml($block->getMethod()->getTitle()); ?>{{pdf_row_separator}}
+<?php echo $block->escapeHtml(__($block->getMethod()->getTitle())); ?>{{pdf_row_separator}}
 
 <?php if ($specificInfo = $block->getSpecificInformation()): ?>
     <?php if ($block->isPUI()): ?>

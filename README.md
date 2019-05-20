@@ -1,14 +1,14 @@
-#  Magento 2 PayPal Plus
+#  Magento 2 PayPal PLUS
 
 PayPal PLUS is a solution where PayPal offers PayPal, Credit Card, Direct Debit (ELV) and Pay Upon Invoice (Kauf auf Rechnung) as individual payment options on the payment selection page. These payment methods cover around 80% customer demand in Germany.
 
 No matter how customer chooses to pay, it is always a single PayPal transaction for merchant, including all resulting advantages like Seller Protection and easy refund.
 
-Based on the payment method selected by the buyer, he will be presented with either the PayPal Login page or an input mask for bank / credit card details. Should PayPal Plus service be unavailable, standard Magento payment methods will be displayed.
+Based on the payment method selected by the buyer, he will be presented with either the PayPal Login page or an input mask for bank / credit card details. Should PayPal PLUS service be unavailable, standard Magento payment methods will be displayed.
 
 ## Installation
 
-To install the Magento 2 PayPal Plus extension please add our repository to your Magento _composer.json_.
+To install the Magento 2 PayPal PLUS extension please add our repository to your Magento _composer.json_.
 
     {
         "repositories": [
@@ -42,7 +42,7 @@ To initialize the Database updates you must run following command afterwards:
 
     bin/magento setup:upgrade
 
-The Magento 2 PayPal Plus module should now be installed and ready to use.
+The Magento 2 PayPal PLUS module should now be installed and ready to use.
 
 ## Issues
 Please use our Servicedesk at: https://support.i-ways.net/hc/de

@@ -1,3 +1,21 @@
+==== 1.2.3 ====
+Renamed PayPal-Plus to PayPal PLUS
+
+==== 1.2.2 ====
+Renamed PayPal Plus to PayPal PLUS
+
+==== 1.2.1 ====
+Changed PaymentMethodTitle translation
+Removed processed by PayPal
+
+==== 1.2.0 ====
+Compatibility with 2.2.6 and 2.3
+Renamed third party modules config
+Added item list to patch
+
+==== 1.1.8 ====
+Fixed discount calculation on virtual quotes
+
 ==== 1.1.7 ====
 Fixed minicart not empty after order success
 Fixed shipping calculation with free shipping

@@ -25,7 +25,7 @@
         <payment>
             <iways_paypalplus_payment>
                 <model>Iways\PayPalPlus\Model\Payment</model>
-                <title>PayPal Plus</title>
+                <title>PayPal PLUS</title>
                 <payment_action>authorize</payment_action>
                 <can_use_checkout>1</can_use_checkout>
                 <active>0</active>

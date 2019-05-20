@@ -18,24 +18,11 @@
 
 namespace Iways\PayPalPlus\Block\Adminhtml\System\Config;
 
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
-
 class ThirdPartyInfo extends \Magento\Config\Block\System\Config\Form\Fieldset
 {
-    /**
-     * @var
-     */
     protected $_dummyElement;
-    /**
-     * @var
-     */
     protected $_fieldRenderer;
-    /**
-     * @var
-     */
     protected $_values;
-
     /**
      * @var \Magento\Payment\Model\Config
      */
@@ -64,19 +51,14 @@ class ThirdPartyInfo extends \Magento\Config\Block\System\Config\Form\Fieldset
         $html = $this->_getHeaderHtml($element);
         $dummyField = $element->getElements()[0];
 
-        $thirdPartyMethods = explode(',',
-            $this->_scopeConfig->getValue('payment/iways_paypalplus_payment/third_party_moduls'));
+        $thirdPartyMethods = explode(',', $this->_scopeConfig->getValue('payment/iways_paypalplus_payment/third_party_moduls'));
         foreach ($this->paymentConfig->getActiveMethods() as $paymentMethod) {
             if (in_array($paymentMethod->getCode(), $thirdPartyMethods)) {
                 $thirdPartyMethod = $paymentMethod->getCode();
                 $field = clone $dummyField;
                 $field->setData('name', str_replace('dummy', $thirdPartyMethod, $field->getName()));
                 $field->setData('label', $paymentMethod->getTitle());
-                $field->setData('value',
-                    $this->_scopeConfig->getValue(
-                        'payment/iways_paypalplus_section/third_party_modul_info/text_' . $thirdPartyMethod
-                    )
-                );
+                $field->setData('value', $this->_scopeConfig->getValue('payment/iways_paypalplus_section/third_party_modul_info/text_' . $thirdPartyMethod));
                 $fieldConfig = $field->getData('field_config');
                 $fieldConfig['id'] = 'text_' . $thirdPartyMethod;
                 $fieldConfig['label'] = $paymentMethod->getTitle();

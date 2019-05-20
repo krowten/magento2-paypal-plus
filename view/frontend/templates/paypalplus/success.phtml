@@ -79,8 +79,6 @@
                 '%1 has assigned the claim against you on basis of a factoring agreement to PayPal (Europe) S.à r.l. et Cie, S.C.A. You will only be released from your debt by paying to PayPal (Europe) S.à r.l. et Cie, S.C.A.', $block->getStoreName()
             ); ?></p>
     </div>
-<?php elseif ($block->isPPP()): ?>
-    <div class="ppp-success"><?php /* @noEscape */ echo __('<i>processed by PayPal</i>');?></div>
 <?php endif; ?>
 <?php if ($block->isPPP()): ?>
     <script>

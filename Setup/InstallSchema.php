@@ -45,8 +45,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Reference Number'
-            ]);
+                'comment' => 'PayPal PLUS Reference Number'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_instruction_type',
@@ -55,8 +56,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Instruction Type'
-            ]);
+                'comment' => 'PayPal PLUS Instruction Type'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_payment_due_date',
@@ -65,8 +67,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Payment Due Date'
-            ]);
+                'comment' => 'PayPal PLUS Payment Due Date'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_note',
@@ -75,8 +78,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Note'
-            ]);
+                'comment' => 'PayPal PLUS Note'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_bank_name',
@@ -85,8 +89,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Bank Name'
-            ]);
+                'comment' => 'PayPal PLUS Bank Name'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_account_holder_name',
@@ -95,8 +100,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Holder Name'
-            ]);
+                'comment' => 'PayPal PLUS Holder Name'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_international_bank_account_number',
@@ -105,8 +111,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus International Bank Account Number'
-            ]);
+                'comment' => 'PayPal PLUS International Bank Account Number'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_bank_identifier_code',
@@ -115,8 +122,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Bank Identifier Code'
-            ]);
+                'comment' => 'PayPal PLUS Bank Identifier Code'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_routing_number',
@@ -125,8 +133,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Routing Number'
-            ]);
+                'comment' => 'PayPal PLUS Routing Number'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_amount',
@@ -135,8 +144,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Amount'
-            ]);
+                'comment' => 'PayPal PLUS Amount'
+            ]
+        );
         $connection->addColumn(
             $table,
             'ppp_currency',
@@ -145,8 +155,9 @@ class InstallSchema implements InstallSchemaInterface
                 'length' => 255,
                 'nullable' => true,
                 'default' => null,
-                'comment' => 'PayPal Plus Currency'
-            ]);
+                'comment' => 'PayPal PLUS Currency'
+            ]
+        );
 
         $installer->endSetup();
     }

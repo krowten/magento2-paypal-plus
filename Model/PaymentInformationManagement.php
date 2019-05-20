@@ -14,12 +14,8 @@
 
 namespace Iways\PayPalPlus\Model;
 
-
-use Magento\Quote\Model\Quote;
-
 class PaymentInformationManagement
 {
-
     /**
      * @var ApiFactory
      */

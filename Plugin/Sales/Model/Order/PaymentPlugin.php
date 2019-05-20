@@ -12,13 +12,13 @@
  * License http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
 
-namespace Iways\PayPalPlus\Model\Plugin;
+namespace Iways\PayPalPlus\Plugin\Sales\Model\Order;
 
 use Magento\Framework\Model\AbstractExtensibleModel;
 use Magento\Sales\Api\Data\OrderPaymentExtensionFactory;
 use Magento\Sales\Model\Order\Payment;
 
-class AfterOrderPaymentGetExtensionAttributes
+class PaymentPlugin
 {
     /**
      * @var \Magento\Sales\Api\Data\OrderPaymentExtensionInterface
@@ -26,7 +26,8 @@ class AfterOrderPaymentGetExtensionAttributes
     protected $orderPaymentExtensionFactory;
 
     /**
-     * @param OrderPaymentExtensionInterface $orderPaymentExtensionFactory
+     * PaymentPlugin constructor.
+     * @param OrderPaymentExtensionFactory $orderPaymentExtensionFactory
      */
     public function __construct(
         OrderPaymentExtensionFactory $orderPaymentExtensionFactory

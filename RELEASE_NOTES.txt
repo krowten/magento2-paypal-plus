@@ -1,3 +1,12 @@
+==== 1.3.0 ====
+Reimplemented M2.3 combatibility
+Removed M2.0 M2.1 M2.2 compatibility
+Note:
+M2.0 M2.1 M2.2 will be supported with v1.2.X upgrades.
+
+==== 1.2.4 ====
+Removed 2.3 compatibility due to problems with PHP 7.0 and M2.2.6 and the CsrfValidation in M2.3
+
 ==== 1.2.3 ====
 Renamed PayPal-Plus to PayPal PLUS
 

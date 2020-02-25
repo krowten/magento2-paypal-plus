@@ -14,6 +14,7 @@
 namespace Iways\PayPalPlus\Model;
 
 use Magento\Framework\Exception\LocalizedException;
+use PayPal\Api\Capture;
 
 /**
  * Class Payment
@@ -208,10 +209,14 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
             if ($transactions && isset($transactions[0])) {
                 $resource = $transactions[0]->getRelatedResources();
                 if ($resource && isset($resource[0])) {
-                    $sale = $resource[0]->getSale();
-                    $transactionId = $sale->getId();
-                    if ($sale->getState() == self::PPP_PENDING) {
-                        $payment->setIsTransactionPending(true);
+                    if($authorization = $resource[0]->getAuthorization()) {
+                        $transactionId = $authorization->getId();
+                    }
+                    if($sale = $resource[0]->getSale()) {
+                        $transactionId = $sale->getId();
+                        if ($sale->getState() == self::PPP_PENDING) {
+                            $payment->setIsTransactionPending(true);
+                        }
                     }
                 }
             }
@@ -230,6 +235,26 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
             ->setShouldCloseParentTransaction(false);
         if ($payment->isCaptureFinal($amount)) {
             $payment->setShouldCloseParentTransaction(true);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param float $amount
+     * @return self
+     */
+    public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $transactionId = $payment->getTransactionId();
+        /** @var Api $api */
+        $api = $this->payPalPlusApiFactory->create();
+        $capture = $api->capturePayment($payment, $amount);
+        if($capture instanceof Capture) {
+            $payment->setTransactionId($capture->getId())->setTransactionClosed(true);
+        } else {
+            throw new \Exception('during the capturing an error occured');
         }
 
         return $this;

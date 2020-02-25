@@ -17,6 +17,9 @@ namespace Iways\PayPalPlus\Model;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order\Payment;
+use PayPal\Api\Authorization;
+use PayPal\Api\Capture;
 use PayPal\Api\Refund;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
@@ -67,6 +70,11 @@ class Api
      * @var mixed|null
      */
     protected $_mode = null;
+
+    /**
+     * @var null|string
+     */
+    protected $_paymentAction = null;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -204,6 +212,7 @@ class Api
         );
 
         $this->_mode = $this->scopeConfig->getValue('iways_paypalplus/api/mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
+        $this->_paymentAction = $this->scopeConfig->getValue('payment/iways_paypalplus_payment/paymentAction', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
 
         $this->_apiContext->setConfig(
             [
@@ -286,7 +295,7 @@ class Api
         $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))->setCancelUrl($this->urlBuilder->getUrl('paypalplus/checkout/cancel'));
 
         $payment = new PayPalPayment();
-        $payment->setIntent("sale")->setExperienceProfileId($webProfile->getId())->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
+        $payment->setIntent($this->_paymentAction)->setExperienceProfileId($webProfile->getId())->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
 
         try {
             $response = $payment->create($this->_apiContext);
@@ -415,6 +424,39 @@ class Api
             $paymentExecution = new PaymentExecution();
             $paymentExecution->setPayerId($payerId);
             return $payment->execute($paymentExecution, $this->_apiContext);
+        } catch (PayPalConnectionException $ex) {
+            $this->payPalPlusHelper->handleException($ex);
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->critical($e);
+            return false;
+        }
+    }
+
+    /**
+     * @param \Magento\Payment\Model\InfoInterface $paymentInfo
+     * @param $amountToCapture
+     * @return bool|Capture
+     */
+    public function capturePayment(\Magento\Payment\Model\InfoInterface $paymentInfo, $amountToCapture)
+    {
+        try {
+            $amount = new Amount();
+
+            if ($paymentInfo instanceof Payment) {
+                $order = $paymentInfo->getOrder();
+                $amount->setCurrency($order->getBaseCurrencyCode());
+                $authorization = Authorization::get($paymentInfo->getAuthorizationTransaction()->getTxnId(), $this->_apiContext);
+            } else {
+                throw new \InvalidArgumentException('only the class '. Payment::class . ' is supported as `paymentInfo`');
+            }
+
+            $amount->setTotal($amountToCapture);
+
+            $capture = new Capture();
+            $capture->setAmount($amount);
+
+            return $authorization->capture($capture, $this->_apiContext);
         } catch (PayPalConnectionException $ex) {
             $this->payPalPlusHelper->handleException($ex);
             return false;

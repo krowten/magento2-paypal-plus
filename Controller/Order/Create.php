@@ -114,6 +114,8 @@ class Create extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        $this->getRequest()->setParams(['ajax' => 1]);
+
         try {
             $cartId = $this->checkoutSession->getQuoteId();
             $result = new DataObject();

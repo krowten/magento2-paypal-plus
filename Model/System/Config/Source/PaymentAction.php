@@ -6,9 +6,9 @@ namespace Iways\PayPalPlus\Model\System\Config\Source;
 
 class PaymentAction implements \Magento\Framework\Option\ArrayInterface
 {
-    const SALE = 'sale';
+    const SALE = \Magento\Payment\Model\Method\AbstractMethod::ACTION_ORDER;
 
-    const AUTHORIZATION = 'authorize';
+    const AUTHORIZATION = \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE;
 
     public function toOptionArray()
     {

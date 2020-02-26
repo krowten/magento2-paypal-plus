@@ -18,29 +18,31 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Sales\Model\Order\Payment;
+use PayPal\Api\Address;
+use PayPal\Api\Amount;
 use PayPal\Api\Authorization;
 use PayPal\Api\Capture;
-use PayPal\Api\Refund;
-use PayPal\Rest\ApiContext;
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Api\Address;
-use PayPal\Api\WebProfile;
-use PayPal\Api\Presentation;
-use PayPal\Api\Payment as PayPalPayment;
-use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\InputFields;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
-use PayPal\Api\Payer;
-use PayPal\Api\RedirectUrls;
-use PayPal\Api\Transaction;
-use PayPal\Api\PayerInfo;
-use PayPal\Api\ShippingAddress;
-use PayPal\Api\PatchRequest;
 use PayPal\Api\Patch;
+use PayPal\Api\PatchRequest;
+use PayPal\Api\Payer;
+use PayPal\Api\PayerInfo;
+use PayPal\Api\Payment as PayPalPayment;
 use PayPal\Api\PaymentExecution;
+use PayPal\Api\Presentation;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Refund;
+use PayPal\Api\RefundRequest;
+use PayPal\Api\Sale;
+use PayPal\Api\ShippingAddress;
+use PayPal\Api\Transaction;
+use PayPal\Api\WebProfile;
+use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Exception\PayPalConnectionException;
+use PayPal\Rest\ApiContext;
 
 /**
  * Iways PayPal Rest Api wrapper
@@ -212,7 +214,7 @@ class Api
         );
 
         $this->_mode = $this->scopeConfig->getValue('iways_paypalplus/api/mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
-        $this->_paymentAction = $this->scopeConfig->getValue('payment/iways_paypalplus_payment/paymentAction', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
+        $this->_paymentAction = $this->scopeConfig->getValue('payment/iways_paypalplus_payment/payment_action', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website);
 
         $this->_apiContext->setConfig(
             [
@@ -295,7 +297,17 @@ class Api
         $redirectUrls->setReturnUrl($this->urlBuilder->getUrl('paypalplus/order/create'))->setCancelUrl($this->urlBuilder->getUrl('paypalplus/checkout/cancel'));
 
         $payment = new PayPalPayment();
-        $payment->setIntent($this->_paymentAction)->setExperienceProfileId($webProfile->getId())->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
+        switch($this->_paymentAction) {
+            case \Magento\Payment\Model\Method\AbstractMethod::ACTION_ORDER:
+                $payment->setIntent('sale');
+                break;
+            case \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE:
+                $payment->setIntent('authorize');
+                break;
+            default:
+                $payment->setIntent('sale');
+        }
+        $payment->setExperienceProfileId($webProfile->getId())->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
 
         try {
             $response = $payment->create($this->_apiContext);
@@ -473,18 +485,24 @@ class Api
      * @return Refund
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function refundPayment($paymentId, $amount)
+    public function refundPayment(Payment\Transaction $transaction, $amount)
     {
-        $transactions = $this->getPayment($paymentId)->getTransactions();
-        $relatedResources = $transactions[0]->getRelatedResources();
-        $sale = $relatedResources[0]->getSale();
-        $refund = new \PayPal\Api\Refund();
-
         $ppAmount = new Amount();
-        $ppAmount->setCurrency($this->storeManager->getStore()->getCurrentCurrencyCode())->setTotal($amount);
-        $refund->setAmount($ppAmount);
+        $ppAmount->setCurrency($this->storeManager->getStore()->getCurrentCurrencyCode());
+        $ppAmount->setTotal($amount);
 
-        return $sale->refund($refund, $this->_apiContext);
+        $refundRequest = new RefundRequest();
+        $refundRequest->setAmount($ppAmount);
+        if ($transaction->getTxnType() === Payment\Transaction::TYPE_CAPTURE) {
+            $capture = Capture::get($transaction->getTxnId(), $this->_apiContext);
+            $detailedRefund = $capture->refundCapturedPayment($refundRequest, $this->_apiContext);
+        } else if ($transaction->getTxnType() === Payment\Transaction::TYPE_ORDER) {
+            $sale = Sale::get($transaction->getTxnId(), $this->_apiContext);
+            $detailedRefund = $sale->refundSale($refundRequest, $this->_apiContext);
+        } else {
+            throw new \RuntimeException("invalid parent transaction type " . $transaction->getTxnType());
+        }
+        return $detailedRefund ? $detailedRefund->getId() : false;
     }
 
     /**

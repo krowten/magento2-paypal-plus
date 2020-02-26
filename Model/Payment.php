@@ -14,6 +14,7 @@
 namespace Iways\PayPalPlus\Model;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order\Payment\Transaction;
 use PayPal\Api\Capture;
 
 /**
@@ -135,18 +136,20 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         $this->ppLogger = $context->getLogger();
     }
 
-    /**
-     * Authorize payment method
-     *
-     * @param \Magento\Payment\Model\InfoInterface $payment
-     * @param float $amount
-     *
-     * @throws \Exception Payment could not be executed
-     *
-     * @return \Iways\PayPalPlus\Model\Payment
-     */
+
+    public function order(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $this->createOrder($payment, $amount);
+        return $this;
+    }
+
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
+        $this->createOrder($payment, $amount);
+        return $this;
+    }
+
+    protected function createOrder(\Magento\Sales\Model\Order\Payment $payment, $amount) {
         /** @var \Magento\Sales\Model\Order\Payment $payment */
         $paymentId = $this->request->getParam('paymentId');
         $payerId = $this->request->getParam('PayerID');
@@ -236,8 +239,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         if ($payment->isCaptureFinal($amount)) {
             $payment->setShouldCloseParentTransaction(true);
         }
-
-        return $this;
+        return $ppPayment;
     }
 
     /**
@@ -247,14 +249,16 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        $transactionId = $payment->getTransactionId();
-        /** @var Api $api */
-        $api = $this->payPalPlusApiFactory->create();
-        $capture = $api->capturePayment($payment, $amount);
-        if($capture instanceof Capture) {
-            $payment->setTransactionId($capture->getId())->setTransactionClosed(true);
-        } else {
-            throw new \Exception('during the capturing an error occured');
+        /** @var Payment */
+        if($payment->getAuthorizationTransaction()) {
+            /** @var Api $api */
+            $api = $this->payPalPlusApiFactory->create();
+            $capture = $api->capturePayment($payment, $amount);
+            if ($capture instanceof Capture) {
+                $payment->setTransactionId($capture->getId())->setTransactionClosed(true);
+            } else {
+                throw new \Exception('an error occurred during the capture');
+            }
         }
 
         return $this;
@@ -269,11 +273,22 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        $ppRefund = $this->payPalPlusApiFactory->create()->refundPayment(
-            $this->_getParentTransactionId($payment),
-            $amount
-        );
-        $payment->setTransactionId($ppRefund->getId())->setTransactionClosed(1);
+        /** @var \Magento\Sales\Model\Order\Payment $payment */
+        $transaction = $this->salesOrderPaymentTransactionFactory->create()->load($payment->getLastTransId(), 'txn_id');
+        if($transaction->getTxnType() === Transaction::TYPE_CAPTURE) {
+            // do nothing
+        } else {
+            $transactionId = $this->_getParentTransactionId($payment);
+            $transaction = $this->salesOrderPaymentTransactionFactory->create()->load($transactionId, 'txn_id');
+        }
+        /** @var Api $api */
+        $api = $this->payPalPlusApiFactory->create();
+        $refundTransactionId = $api->refundPayment($transaction, $amount);
+        if($refundTransactionId) {
+            $payment->setTransactionId($refundTransactionId)->setTransactionClosed(true);
+        } else {
+            throw new \Exception('an error occurred during the refund');
+        }
         return $this;
     }
 

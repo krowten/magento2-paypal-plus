@@ -74,7 +74,7 @@
                     <field id="payment_action" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment action</label>
                         <source_model>Iways\PayPalPlus\Model\System\Config\Source\PaymentAction</source_model>
-                        <config_path>payment/iways_paypalplus_payment/paymentAction</config_path>
+                        <config_path>payment/iways_paypalplus_payment/payment_action</config_path>
                     </field>
                     <field id="show_loading_indicator" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Show loading indicator</label>

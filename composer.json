@@ -1,5 +1,5 @@
 {
-  "name": "krowten/module-pay-pal-plus",
+  "name": "krowten/magento2-paypal-plus",
   "description": "PayPal PLUS for Magento 2",
   "repositories": [
     { "type": "composer", "url": "https://packagist.org" },
